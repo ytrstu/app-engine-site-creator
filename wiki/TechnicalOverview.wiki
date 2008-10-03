@@ -1,4 +1,4 @@
-#summary Deployment instructions and high level description of the code.
+#summary Technical details and a high level description of the code.
 
 = Introduction =
 
