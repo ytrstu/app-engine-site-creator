@@ -16,6 +16,10 @@ After customization app can be deployed by executing
 {{{
 appcfg.py update .
 }}}
-from the root directory of the application.  Once an install is running on App Engine, an administrator of the app should log in and go to http://appname.appspot.com/admin/ and click on the "Create Page"
+from the root directory of the application.  Once an install is running on App Engine, an administrator of the app should log in and go to http://appname.appspot.com/admin/ and click on the "Create Page" link in the side bar.  This will result in the creation of a root page for the site, which can be optionally renamed.
 
 ==Administering==
+
+The App Engine admin interface allows for the creation of users profiles (only Google accounts with a registered profile are granted access to the site), user groups, pages, and access control lists.  The interfaces to modify this data are accessible via the sidebar in the admin interface.
+
+Additionally, a sidebar can be specified in YAML format.  Clicking "add to sidebar" from the page editing interface will cause a YAML entry to be added to the sidebar definition.  That entry can then be repositioned from the sidebar editing view.
