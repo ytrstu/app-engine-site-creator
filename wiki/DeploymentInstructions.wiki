@@ -16,7 +16,7 @@ After customization app can be deployed by executing
 {{{
 appcfg.py update .
 }}}
-from the root directory of the application.  Once an install is running on App Engine, an administrator of the app should log in and go to http://appname.appspot.com/admin/ and click on the "Create Page" link in the side bar.  This will result in the creation of a root page for the site, which can be optionally renamed.
+from the root directory of the application.  Once an install is running on App Engine, an administrator of the app should log in and go to http://your-app-name.appspot.com/admin/ and click on the "Create Page" link in the side bar.  This will result in the creation of a root page for the site, which can be optionally renamed.
 
 ==Administering==
 
