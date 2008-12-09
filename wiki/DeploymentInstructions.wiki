@@ -2,7 +2,7 @@
 
 ==Downloading==
 
-Download the trunk distribution of the code from Subversion by following the instructions provided [http://http://code.google.com/p/app-engine-site-creator/source/checkout here].
+Download the trunk distribution of the code from Subversion by following the instructions provided [http://code.google.com/p/app-engine-site-creator/source/checkout here].
 
 You'll also need to download the App Engine SDK from [http://code.google.com/appengine/downloads.html here].
 
