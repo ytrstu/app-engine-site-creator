@@ -1,5 +1,3 @@
-#!/usr/bin/python2.5
-#
 # Copyright 2008 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 """Bootstrap for running a Django app under Google App Engine.
 
@@ -23,26 +20,31 @@ directly -- everything else is controlled from there.
 
 """
 
+# Standard Python imports.
 import os
-from django.conf import settings
-from django.core.handlers import wsgi
+import sys
+import logging
+
+from appengine_django import InstallAppengineHelperForDjango
+from appengine_django import have_django_zip
+from appengine_django import django_zip_path
+InstallAppengineHelperForDjango()
+
+# Google App Engine imports.
 from google.appengine.ext.webapp import util
 
-settings._target = None
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-
-import django.core.signals
-import django.db
-import django.dispatch.dispatcher
-
-# Unregister the rollback event handler.
-django.dispatch.dispatcher.disconnect(
-    django.db._rollback_on_exception,  # pylint: disable-msg=W0212
-    django.core.signals.got_request_exception)
+# Import the part of Django that we use here.
+import django.core.handlers.wsgi
 
 def main():
-  """Loads the django application."""
-  application = wsgi.WSGIHandler()
+  # Ensure the Django zipfile is in the path if required.
+  if have_django_zip and django_zip_path not in sys.path:
+    sys.path.insert(1, django_zip_path)
+
+  # Create a Django application for WSGI.
+  application = django.core.handlers.wsgi.WSGIHandler()
+
+  # Run the WSGI CGI handler with that application.
   util.run_wsgi_app(application)
 
 if __name__ == '__main__':

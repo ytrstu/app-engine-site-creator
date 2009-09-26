@@ -20,7 +20,8 @@
 import os
 
 APPEND_SLASH = False
-DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+# DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+DEBUG = True;
 MIDDLEWARE_CLASSES = (
     'middleware.AddUserToRequestMiddleware',
 )
@@ -34,3 +35,8 @@ TEMPLATE_DIRS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
 )
+
+INSTALLED_APPS = (
+  'appengine_django',
+)
+
