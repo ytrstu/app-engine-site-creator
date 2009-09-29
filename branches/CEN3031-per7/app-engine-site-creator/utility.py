@@ -26,7 +26,7 @@ from django import shortcuts
 from django.core import urlresolvers
 from google.appengine.api import memcache
 from google.appengine.api import users
-import models
+from models import models
 
 
 def respond(request, template, params=None):

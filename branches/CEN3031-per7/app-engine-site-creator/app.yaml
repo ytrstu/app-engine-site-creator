@@ -24,7 +24,7 @@ handlers:
     login: required
  
   - url: /.*
-    script: main.py
+    script: common/appenginepatch/main.py
     
 
     

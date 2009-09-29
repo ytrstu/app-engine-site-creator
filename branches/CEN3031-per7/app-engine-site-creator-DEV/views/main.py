@@ -25,7 +25,7 @@ import configuration
 from django import http
 from django.core import urlresolvers
 from django.utils import simplejson
-import models
+from models import models
 import utility
 
 

@@ -16,11 +16,34 @@
 #
 
 """Django settings for app-engine-site-creator project."""
+# Increase this when you update your media on the production site, so users
+# don't have to refresh their cache. By setting this your MEDIA_URL
+# automatically becomes /media/MEDIA_VERSION/
+MEDIA_VERSION = 1
+
+# By hosting media on a different domain we can get a speedup (more parallel
+# browser connections).
+#if on_production_server or not have_appserver:
+#    MEDIA_URL = 'http://media.mydomain.com/media/%d/'
+
+# Add base media (jquery can be easily added via INSTALLED_APPS)
+COMBINE_MEDIA = {
+    'combined-%(LANGUAGE_CODE)s.js': (
+        # See documentation why site_data can be useful:
+        # http://code.google.com/p/app-engine-patch/wiki/MediaGenerator
+        '.site_data.js',
+    ),
+    'combined-%(LANGUAGE_DIR)s.css': (
+        'global/look.css',
+    ),
+}
 
 import os
 
 APPEND_SLASH = False
-DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+# DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
+DATABASE_ENGINE = 'appengine'
+DEBUG = True;
 MIDDLEWARE_CLASSES = (
     'middleware.AddUserToRequestMiddleware',
 )
@@ -34,3 +57,9 @@ TEMPLATE_DIRS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
 )
+
+INSTALLED_APPS = (
+    'appenginepatcher',
+    'models',
+)
+
