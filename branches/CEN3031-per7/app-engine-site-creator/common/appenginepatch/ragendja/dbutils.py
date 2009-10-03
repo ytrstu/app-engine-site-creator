@@ -57,7 +57,7 @@ KEY_NAME_PREFIX = 'k'
 def generate_key_name(*values):
     """
     Escapes a string such that it can be used safely as a key_name.
-    
+
     You can pass multiple values in order to build a path.
     """
     return KEY_NAME_PREFIX + '/'.join(
@@ -546,11 +546,11 @@ class FakeModelProperty(db.Property):
 
     def get_form_field(self, **kwargs):
         if self.raw:
-          from django import forms
-          defaults = kwargs
-          defaults['widget'] = forms.TextInput(attrs={'size': 80})
+            from django import forms
+            defaults = kwargs
+            defaults['widget'] = forms.TextInput(attrs={'size': 80})
         else:
-          defaults = FakeModelProperty.get_fake_defaults(self.model, **kwargs)
+            defaults = FakeModelProperty.get_fake_defaults(self.model, **kwargs)
         return super(FakeModelProperty, self).get_form_field(**defaults)
 
 class FakeModelListProperty(db.ListProperty):
@@ -602,7 +602,7 @@ class FakeModelListProperty(db.ListProperty):
 
 class KeyListProperty(db.ListProperty):
     """Simulates a many-to-many relation using a list property.
-    
+
     On the model level you interact with keys, but when used in a ModelForm
     you get a ModelMultipleChoiceField (as if it were a ManyToManyField)."""
 

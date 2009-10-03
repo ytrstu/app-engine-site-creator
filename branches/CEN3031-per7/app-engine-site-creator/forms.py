@@ -19,55 +19,56 @@
 
 from django import forms
 from google.appengine.ext.db import djangoforms
-import models
+from content.models import *
 import newvalidators
 
 
 class PageEditForm(djangoforms.ModelForm):
-  """Form used by editors to create or modify a page."""
+    """Form used by editors to create or modify a page."""
 
-  _text_attrs = dict(size=55, maxlength=80)
-  title = forms.CharField(
-      widget=forms.TextInput(attrs=_text_attrs))
-  name = forms.CharField(
-      widget=forms.TextInput(attrs=_text_attrs))
+    _text_attrs = dict(size=55, maxlength=80)
+    title = forms.CharField(
+        widget=forms.TextInput(attrs=_text_attrs))
+    name = forms.CharField(
+        widget=forms.TextInput(attrs=_text_attrs))
 
-  def __init__(self, *args, **kwargs):
-    # pylint: disable-msg=W0142
-    super(PageEditForm, self).__init__(*args, **kwargs)
-    self.fields.keyOrder = self.Meta.fields  #This line should be unnecessary
+    def __init__(self, *args, **kwargs):
+        # pylint: disable-msg=W0142
+        super(PageEditForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = self.Meta.fields  #This line should be unnecessary
 
-  class Meta(object):
-    # pylint: disable-msg=R0903
-    """Django instruction to link form to Page model."""
-    fields = ['title', 'name']
-    model = models.Page
+    class Meta(object):
+        # pylint: disable-msg=R0903
+        """Django instruction to link form to Page model."""
+        fields = ['title', 'name']
+        model = Page
 
-  def clean_name(self):
-    """Django validator to ensure the page name can be part of a URL."""
-    name = self.clean_data['name']
-    newvalidators.is_valid_page_name(name)
-    return name
+    def clean_name(self):
+        """Django validator to ensure the page name can be part of a URL."""
+        data = self.cleaned_data
+        name = data.get("name")
+        newvalidators.is_valid_page_name(name)
+        return name
 
 
 class GroupEditForm(djangoforms.ModelForm):
-  """Form used by editors to modify a user group."""
+    """Form used by editors to modify a user group."""
 
-  class Meta(object):
-    # pylint: disable-msg=R0903
-    """Django instruction to link the form to UserGroup model."""
-    model = models.UserGroup
-    exclude = ['users']
+    class Meta(object):
+        # pylint: disable-msg=R0903
+        """Django instruction to link the form to UserGroup model."""
+        model = UserGroup
+        exclude = ['users']
 
 
 class UserEditForm(djangoforms.ModelForm):
-  """Form used by editors to modify a user profile."""
+    """Form used by editors to modify a user profile."""
 
-  #TODO(bogosian): when checkbox is empty the form POST is empty without this
-  hidden_dummy = forms.Field(widget=forms.HiddenInput(attrs={'value': 'dummy'}))
+    #TODO(bogosian): when checkbox is empty the form POST is empty without this
+    hidden_dummy = forms.Field(widget=forms.HiddenInput(attrs={'value': 'dummy'}))
 
-  class Meta(object):
-    # pylint: disable-msg=R0903
-    """Django instruction to link the form to UserProfile model."""
-    model = models.UserProfile
-    exclude = ['email']
+    class Meta(object):
+        # pylint: disable-msg=R0903
+        """Django instruction to link the form to UserProfile model."""
+        model = UserProfile
+        exclude = ['email']

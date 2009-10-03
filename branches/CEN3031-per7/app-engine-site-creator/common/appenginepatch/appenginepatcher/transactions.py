@@ -1,6 +1,6 @@
 from google.appengine.api import apiproxy_stub_map
 from google.appengine.ext import db
-from django.dispatch import Signal 
+from django.dispatch import Signal
 from django.db.models import signals
 from django.utils._threading_local import local
 from functools import wraps

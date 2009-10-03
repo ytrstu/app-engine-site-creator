@@ -27,10 +27,10 @@ def patch_all():
         return
     patch_python()
     patch_app_engine()
-    
+
     # Add signals: post_save_committed, post_delete_committed
     from appenginepatcher import transactions
-    
+
     setup_logging()
     done_patch_all = True
 
@@ -60,12 +60,12 @@ def patch_app_engine():
     def __len__(self):
         return self.count()
     db.Query.__len__ = __len__
-    
+
     old_count = db.Query.count
     def count(self, limit=301):
         return old_count(self, limit)
     db.Query.count = count
-    
+
     # Add "model" property to Query (needed by generic views)
     class ModelProperty(object):
         def __get__(self, query, unused):
@@ -187,7 +187,7 @@ def patch_app_engine():
                 flat.append((choice,value))
         return flat
     db.Property.flatchoices = property(_get_flatchoices)
-    
+
     # Add repr to make debugging a little bit easier
     def __repr__(self):
         data = []
@@ -304,7 +304,7 @@ def patch_app_engine():
 
         def _set_db_table(self, db_table):
             self._db_table = db_table
-        
+
         def _get_db_table(self):
             if getattr(settings, 'DJANGO_STYLE_MODEL_KIND', True):
                 if hasattr(self, '_db_table'):
@@ -316,7 +316,7 @@ def patch_app_engine():
 
         def _set_db_tablespace(self, db_tablespace):
             self._db_tablespace = db_tablespace
-        
+
         def _get_db_tablespace(self):
             if hasattr(self, '_db_tablespace'):
                 return self._db_tablespace
@@ -518,7 +518,7 @@ def patch_app_engine():
 
     # Required to support reference properties to db.Model
     db.Model._meta = _meta(db.Model, ())
-    
+
     def _initialize_model(cls, bases):
         cls._meta = _meta(cls, bases)
         cls._default_manager = cls

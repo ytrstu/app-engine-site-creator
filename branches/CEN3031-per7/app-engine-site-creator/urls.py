@@ -18,7 +18,7 @@
 """Defines the url patterns for the application."""
 
 # pylint: disable-msg=C0103,C0301
-
+import os
 from django.conf.urls import defaults
 
 urlpatterns = defaults.patterns(
@@ -50,7 +50,13 @@ urlpatterns = defaults.patterns(
     (r'^admin/memcache_info/flush/$', 'admin.flush_memcache_info'),
     (r'^_treedata/$', 'main.get_tree_data'),
     (r'^sitemap/$', 'main.page_list'),
-    (r'^(.*)$', 'main.get_url'),
+)
+urlpatterns += defaults.patterns(
+    '',
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root':  os.path.join(os.path.dirname(__file__), 'static')}),
+    (r'^(.*)$', 'views.main.get_url'),
+
 )
 
 handler404 = 'utility.page_not_found'

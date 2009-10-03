@@ -24,11 +24,10 @@ import StringIO
 
 from django import http
 from django.core import urlresolvers
-from django.core import validators
 import forms
 from google.appengine.api import memcache
 from google.appengine.ext import db
-import models
+from models import models
 import utility
 import yaml
 
@@ -295,10 +294,8 @@ def upload_file(request):
   if not url and not file_name:
     url = 'invalid URL'
 
-  if url:
-    try:
-      validators.isValidURL(url, None)
-    except validators.ValidationError, excption:
+  if not url.is_valid()
+    except forms.ValidationError, excption:
       return utility.page_not_found(request, excption.messages[0])
 
   file_record = page.get_attachment(file_name)

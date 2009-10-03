@@ -165,4 +165,4 @@ class RelationsCleanupTest(TestCase):
     def test_fake_model_list_property(self):
         value = {'bla': [1, 2, {'blub': 'bla'*1000}]}
         FML(data=[FakeModel(value=value)]).put()
-        self.assertEqual(FML.all()[0].data[0].value, value)        
+        self.assertEqual(FML.all()[0].data[0].value, value)

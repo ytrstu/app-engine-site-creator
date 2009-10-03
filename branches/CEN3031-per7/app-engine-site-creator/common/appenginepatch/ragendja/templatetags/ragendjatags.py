@@ -59,7 +59,7 @@ def exclude_form_fields(form=None, fields=None, as_choice='as_table',
     fields=fields.replace(' ', '').split(',')
     if not global_errors:
         form.errors[NON_FIELD_ERRORS] = form.error_class()
-    
+
     fields_backup = deepcopy(form.fields)
     for field in fields:
         if field in form.fields:
@@ -75,16 +75,16 @@ def include_form_fields(form=None, fields=None, as_choice='as_table',
     fields=fields.replace(' ', '').split(',')
     if not global_errors:
         form.errors[NON_FIELD_ERRORS] = form.error_class()
-    
+
     fields_backup = deepcopy(form.fields)
-                    
+
     form.fields = SortedDict()
     for field in fields:
         if field in fields_backup:
             form.fields[field] = fields_backup[field]
-                
+
     resulting_text = getattr(form, as_choice)()
-    
+
     form.fields = fields_backup
     return resulting_text
 

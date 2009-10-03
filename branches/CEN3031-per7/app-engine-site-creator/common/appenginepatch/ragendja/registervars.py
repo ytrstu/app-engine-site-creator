@@ -5,13 +5,13 @@ class RegisterVars(dict):
     """
     This class provides a simplified mechanism to build context processors
     that only add variables or functions without processing a request.
-    
+
     Your module should have a global instance of this class called 'register'.
     You can then add the 'register' variable as a context processor in your
     settings.py.
-    
+
     How to use:
-    
+
     >>> register = RegisterVars()
     >>> def func():
     ...     pass
@@ -22,14 +22,14 @@ class RegisterVars(dict):
     ...     pass
     >>> register['otherfunc'] is otherfunc
     True
-    
+
     Alternatively you can specify the name of the function with either of:
     def func(...): ...
     register(func, 'new_name')
-    
+
     @register('new_name')
     def ...
-    
+
     You can even pass a dict or RegisterVars instance:
     register(othermodule.register)
     register({'myvar': myvar})

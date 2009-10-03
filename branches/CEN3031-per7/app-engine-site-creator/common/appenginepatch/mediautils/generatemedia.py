@@ -285,7 +285,7 @@ def updatemedia(compressed=None):
             mtime = os.path.getmtime(path)
     if os.path.exists(MEDIA_ROOT) and getmtime(MEDIA_ROOT) <= mtime:
         shutil.rmtree(MEDIA_ROOT)
-    
+
     if not os.path.exists(MEDIA_ROOT):
         os.makedirs(MEDIA_ROOT)
     if not os.path.exists(DYNAMIC_MEDIA):
@@ -320,7 +320,7 @@ def updatemedia(compressed=None):
             continue
         print 'Copying %s...' % target
         copy_file(path, generated)
-    
+
     # Update dynamic files
     cache = {}
     for target, kwargs, group in targets:

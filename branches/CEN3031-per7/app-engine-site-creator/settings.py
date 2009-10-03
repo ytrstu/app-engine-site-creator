@@ -49,6 +49,8 @@ MIDDLEWARE_CLASSES = (
 )
 ROOT_PATH = os.path.dirname(__file__)
 ROOT_URLCONF = 'urls'
+SERVER_NAME = 'localhost'
+SERVER_PORT = 8000
 TEMPLATE_DEBUG = DEBUG
 TEMPLATE_CONTEXT_PROCESSORS = ()
 TEMPLATE_DIRS = (
@@ -60,6 +62,6 @@ TEMPLATE_LOADERS = (
 
 INSTALLED_APPS = (
     'appenginepatcher',
-    'models',
+    'content',
+    #'django_extensions',
 )
-

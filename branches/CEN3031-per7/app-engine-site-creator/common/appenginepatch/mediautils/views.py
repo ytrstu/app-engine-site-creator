@@ -21,7 +21,7 @@ def get_file(request, path):
         content = get_target_content(group, cache, **kwargs)
     elif path in copy_targets:
         fp = open(copy_targets[path], 'rb')
-        content = fp.read() 
+        content = fp.read()
         fp.close()
     else:
         raise Http404('Media file not found: %s' % path)

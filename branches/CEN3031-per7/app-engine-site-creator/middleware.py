@@ -22,43 +22,43 @@ import logging
 from django import http
 from google.appengine.api import users
 
-import models
+from content.models import *
 import utility
 
 
 class AddUserToRequestMiddleware(object):
-  # pylint: disable-msg=R0903
-  """Adds a user data to each request.
+    # pylint: disable-msg=R0903
+    """Adds a user data to each request.
 
-  Add a user object, a profile object, and a user_is_admin flag to each
-  request.  If the user is an administrator of the application but does
-  not have a profile, one is created.
+    Add a user object, a profile object, and a user_is_admin flag to each
+    request.  If the user is an administrator of the application but does
+    not have a profile, one is created.
 
-  """
-
-  def process_request(self, request):
-    # pylint: disable-msg=R0201
-    """Method defined by Django to handle processing requests.
-
-    Args:
-      request: the http request to process
-
-    Returns:
-      None
     """
-    user = users.GetCurrentUser()
-    request.user = user
-    request.profile = None
-    
-    if user:
-      request.user_is_admin = users.is_current_user_admin()
-      profile = models.UserProfile.load(user.email())
-      if not profile:
-        if request.user_is_admin:
-          profile = models.UserProfile(email=user.email(), is_superuser=True)
-          profile.put()
-          logging.info('Created profile for admin %s' % profile.email)
 
-      request.profile = profile
+    def process_request(self, request):
+        # pylint: disable-msg=R0201
+        """Method defined by Django to handle processing requests.
 
-    return None
+        Args:
+          request: the http request to process
+
+        Returns:
+          None
+        """
+        user = users.GetCurrentUser()
+        request.user = user
+        request.profile = None
+
+        if user:
+            request.user_is_admin = users.is_current_user_admin()
+            profile = UserProfile.load(user.email())
+            if not profile:
+                if request.user_is_admin:
+                    profile = UserProfile(email=user.email(), is_superuser=True)
+                    profile.put()
+                    logging.info('Created profile for admin %s' % profile.email)
+
+            request.profile = profile
+
+        return None

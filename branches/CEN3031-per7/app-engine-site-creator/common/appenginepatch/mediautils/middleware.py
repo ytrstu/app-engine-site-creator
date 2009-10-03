@@ -4,7 +4,7 @@ from mediautils.views import get_file
 
 class MediaMiddleware(object):
     """Returns media files.
-    
+
     This is a middleware, so it can handle the request as early as possible
     and thus with minimum overhead."""
     def process_request(self, request):

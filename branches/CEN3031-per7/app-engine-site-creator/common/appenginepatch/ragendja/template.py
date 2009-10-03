@@ -67,7 +67,7 @@ def render_to_response(request, template_name, data=None, mimetype=None):
 
     response = HttpResponse(render_to_string(request, template_name, data),
         content_type='%s; charset=%s' % (mimetype, settings.DEFAULT_CHARSET))
-    
+
     if original_mimetype == 'application/xhtml+xml':
         # Since XHTML is served with two different MIME types, depending on the
         # browser, we need to tell proxies to serve different versions.

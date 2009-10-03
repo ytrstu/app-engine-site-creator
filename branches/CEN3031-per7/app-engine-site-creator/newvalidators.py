@@ -18,25 +18,25 @@
 """Custom validators."""
 
 import re
-from django import newforms as forms
+from django import forms
 
 PAGE_NAME_RE = re.compile(r'^([\w\-]+)$')
 
 
 def is_valid_page_name(field_data):
-  """Validator for page name input.
+    """Validator for page name input.
 
-  Determines if the name provided by the user is a valid name to use as a
-  URL in the system
+    Determines if the name provided by the user is a valid name to use as a
+    URL in the system
 
-  Args:
-    field_data: Data input by the user on the form
+    Args:
+      field_data: Data input by the user on the form
 
-  Raises:
-    ValidationError: The input data is not acceptable as a page name
+    Raises:
+      ValidationError: The input data is not acceptable as a page name
 
-  """
-  if not PAGE_NAME_RE.search(field_data):
-    raise forms.ValidationError('A valid page name can only contain '
-                                'alphanumeric characters, underscores and '
-                                'hyphens')
+    """
+    if not PAGE_NAME_RE.search(field_data):
+        raise forms.ValidationError('A valid page name can only contain '
+                                    'alphanumeric characters, underscores and '
+                                    'hyphens')
