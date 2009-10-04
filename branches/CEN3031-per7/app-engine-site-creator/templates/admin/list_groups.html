@@ -7,7 +7,7 @@
 {% for group in groups %}
   <li>
     <b>{{ group.name|escape }}</b> -
-    <a href="{% url views.admin.edit_group group.key.id %}">edit</a>
+    <a href="{% url core.views.admin.edit_group group.key.id %}">edit</a>
     <br />
     {{ group.description|escape }}
   </li>
@@ -15,7 +15,7 @@
 </ul>
 
 <p>
-  <a href="{% url views.admin.new_group %}">Create a new group</a>
+  <a href="{% url core.views.admin.new_group %}">Create a new group</a>
 </p>
 
 {% endblock %}

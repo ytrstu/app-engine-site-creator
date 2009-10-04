@@ -2,14 +2,14 @@
 
 {% block content %}
 <br />
-<a href="{% url views.admin.view_group None %}">Show All</a>
+<a href="{% url core.views.admin.view_group None %}">Show All</a>
 <br />
 <br />
 Filter by group:
 <ul>
 {% for group in groups %}
 <li>
-  <a href="{% url views.admin.view_group group.key.id %}">{{ group.name }}</a>
+  <a href="{% url core.views.admin.view_group group.key.id %}">{{ group.name }}</a>
 </li>
 {% endfor %}
 </ul>

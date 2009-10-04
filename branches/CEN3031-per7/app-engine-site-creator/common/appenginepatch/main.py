@@ -104,8 +104,9 @@ import configuration
 from django import http
 from django.core import urlresolvers
 from django.utils import simplejson
-from content.models import *
-import utility
+from core.models.sidebar import Sidebar
+from core.models.files import Page
+from core import utility
 
 
 def send_page(page, request):

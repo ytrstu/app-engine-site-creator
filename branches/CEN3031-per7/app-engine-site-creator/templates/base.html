@@ -29,8 +29,8 @@
         {% block user_header %}
         {% if user %}
           <b>{{ user.email }}</b>
-          {% if is_superuser %} | <a href="{% url views.admin.index %}">Edit site</a>{% endif %}
-          {% if is_admin %} | <a href="{% url views.admin.display_memcache_info %}">Memcache</a>{% endif %}
+          {% if is_superuser %} | <a href="{% url core.views.admin.index %}">Edit site</a>{% endif %}
+          {% if is_admin %} | <a href="{% url core.views.admin.display_memcache_info %}">Memcache</a>{% endif %}
           {% if sign_out %} | <a href="{{sign_out}}">Sign out</a>{% endif %}
         {% else %}
           {% if sign_in %}<a href="{{sign_in}}">Sign in</a>{%endif%}
@@ -43,7 +43,7 @@
       <div id="sidebar">
       {% block sidebar %}
         {% if sidebar %}
-          {{ sidebar }}
+          {{ sidebar|safe }}
         {% else %}
           Sidebar not defined.
         {% endif %}
@@ -66,7 +66,7 @@
 
     <div id="footer">
     {% block footer %}
-      {{ configuration.FOOTER_HTML }}
+    {{ configuration.FOOTER_HTML|safe }}
     {% endblock %}
 
     {% block tracking %}

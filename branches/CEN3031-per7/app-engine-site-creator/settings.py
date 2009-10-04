@@ -38,14 +38,21 @@ COMBINE_MEDIA = {
     ),
 }
 
-import os
+import os,logging
+from core.middleware import middleware, debug_toolbar
 
 APPEND_SLASH = False
 # DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
 DATABASE_ENGINE = 'appengine'
 DEBUG = True;
+INTERNAL_IPS = ('localhost',)
 MIDDLEWARE_CLASSES = (
-    'middleware.AddUserToRequestMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    #'django.contrib.sessions.middleware.SessionMiddleware',
+    #'django.contrib.auth.middleware.AuthenticationMiddleware',        
+    'core.middleware.middleware.AddUserToRequestMiddleware',
+    'core.middleware.debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'ragendja.auth.middleware.GoogleAuthenticationMiddleware',
 )
 ROOT_PATH = os.path.dirname(__file__)
 ROOT_URLCONF = 'urls'
@@ -62,6 +69,6 @@ TEMPLATE_LOADERS = (
 
 INSTALLED_APPS = (
     'appenginepatcher',
-    'content',
     #'django_extensions',
+    'core.middleware.debug_toolbar',
 )

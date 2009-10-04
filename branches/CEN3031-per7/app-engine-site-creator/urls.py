@@ -20,9 +20,12 @@
 # pylint: disable-msg=C0103,C0301
 import os
 from django.conf.urls import defaults
+from ragendja.urlsauto import urlpatterns
+from ragendja.auth.urls import urlpatterns as auth_patterns
 
-urlpatterns = defaults.patterns(
-    'views',
+
+urlpatterns = auth_patterns + defaults.patterns(
+    'core.views',
     (r'^admin/$', 'admin.index'),
     (r'^admin/recent/$', 'admin.recently_modified'),
     (r'^admin/new/(\d*)$', 'admin.new_page'),
@@ -40,7 +43,7 @@ urlpatterns = defaults.patterns(
     (r'^admin/editacl$', 'admin.edit_acl'),
     (r'^admin/bulkeditusers/$', 'admin.bulk_edit_users'),
     (r'^admin/exportusers/$', 'admin.export_users'),
-    (r'^admin/edit/(\d+)/$', 'admin.edit_page'),
+    (r'^admin/edit/(?P<page_id>.*)/$', 'admin.edit_page'),
     (r'^admin/deletepage/([^\s]+)/$', 'admin.delete_page'),
     (r'^admin/download/([\w\-]+).html$', 'admin.download_page_html'),
     (r'^admin/addfile/$', 'admin.upload_file'),
@@ -55,9 +58,17 @@ urlpatterns += defaults.patterns(
     '',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root':  os.path.join(os.path.dirname(__file__), 'static')}),
-    (r'^(.*)$', 'views.main.get_url'),
+# Django Debug Toolbar routes. Remove in final version
+    (r'^debug_toolbar_media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root':  os.path.join(os.path.dirname(__file__), 'core/middleware/debug_toolbar/media/debug_toolbar')}),
+    (r'^__debug__/m/(.*)$', 'core.middleware.debug_toolbar.views.debug_media'),
+    (r'^__debug__/sql_select/$', 'core.middleware.debug_toolbar.views.sql_select'),
+    (r'^__debug__/sql_explain/$', 'core.middleware.debug_toolbar.views.sql_explain'),
+    (r'^__debug__/sql_profile/$', 'core.middleware.debug_toolbar.views.sql_profile'),
+    (r'^__debug__/template_source/$', 'core.middleware.debug_toolbar.views.template_source'),
+    (r'^(.*)$', 'core.views.main.get_url'),
 
-)
+) + urlpatterns
 
 handler404 = 'utility.page_not_found'
 handler500 = defaults.handler500

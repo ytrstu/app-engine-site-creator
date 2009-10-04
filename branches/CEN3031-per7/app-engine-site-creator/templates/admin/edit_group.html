@@ -13,14 +13,14 @@
 {% block content %}
 
 {% if group %}
-  <a href="{% url views.admin.delete_group group.key.id %}">Delete Group</a>
+  <a href="{% url core.views.admin.delete_group group.key.id %}">Delete Group</a>
   <br /><br />
 {% endif %}
 
 
 <h1>Group Information:</h1>
 
-<form action="{% url views.admin.edit_group group.key.id %}"
+<form action="{% url core.views.admin.edit_group group.key.id %}"
       method="post">
   <table cellpadding="5">
   {% for field in form %}
