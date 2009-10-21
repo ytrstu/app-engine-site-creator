@@ -262,7 +262,12 @@ def new_page(request, parent_id):
 
     if not parent_page.user_can_write(request.profile):
         return utility.forbidden(request)
-    return edit_page(request, None, parent_id=parent_id)
+    newpage = Page(name = 'New Page')
+    if parent_page:
+        newpage.parent_page = parent_page
+    newpage.put()
+
+    return edit_page(request, page_id=newpage.key().id(), parent_id=parent_id)
 
 
 def upload_file(request):

@@ -64,7 +64,6 @@ class DebugToolbarMiddleware(object):
                 urls.urlpatterns += self.original_pattern
                 self.override_url = False
             request.urlconf = 'urls'
-            logging.debug('attempting to show debug toolbar')
             self.debug_toolbar = DebugToolbar(request)
             for panel in self.debug_toolbar.panels:
                 panel.process_request(request)
