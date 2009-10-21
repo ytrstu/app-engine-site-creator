@@ -136,10 +136,7 @@
         <td style="font-weight:bold;">{{ field.label_tag }}</td>
         <td>
           {{ field }}
-          {% ifequal field.name "name" %}
-            &nbsp; <span class="small"><a href="javascript:generate_name();">
-              Complete from title</a></span>
-          {% endifequal %}
+		  
           {% if field.help_text %}<br>{{ field.help_text }}{% endif %}
           {% if field.errors %}
             <br><span class="error">{{ field.errors }}</span>

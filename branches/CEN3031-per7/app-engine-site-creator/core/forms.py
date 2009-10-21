@@ -28,11 +28,12 @@ from core import validators
 class PageEditForm(djangoforms.ModelForm):
     """Form used by editors to create or modify a page."""
 
-    _text_attrs = dict(size=55, maxlength=80)
+    _title_attrs = dict(size=55, maxlength=80, onchange="javascript:generate_name();", onkeyup="javascript:generate_name();")
     title = forms.CharField(
-        widget=forms.TextInput(attrs=_text_attrs))
+        widget=forms.TextInput(attrs=_title_attrs))
+    _name_attrs = dict(size=55, maxlength=80)
     name = forms.CharField(
-        widget=forms.TextInput(attrs=_text_attrs))
+        widget=forms.TextInput(attrs=_name_attrs))
 
     def __init__(self, *args, **kwargs):
         # pylint: disable-msg=W0142
