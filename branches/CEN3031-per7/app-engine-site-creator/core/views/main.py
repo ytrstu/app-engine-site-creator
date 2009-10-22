@@ -23,6 +23,7 @@ import mimetypes
 import yaml
 
 import configuration
+from google.appengine.api import users
 from django import http
 from django.core import urlresolvers
 from django.utils import simplejson

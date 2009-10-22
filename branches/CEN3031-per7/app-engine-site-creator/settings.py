@@ -72,3 +72,7 @@ INSTALLED_APPS = (
     #'django_extensions',
     'core.middleware.debug_toolbar',
 )
+
+DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS' : False,
+        }

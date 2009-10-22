@@ -144,8 +144,8 @@ class File(db.Model):
     def put(self):
         """Overridden method to flush the memcache."""
         super(File, self).put()
-        #if self.acl:
-        #    self.acl.put()
+        if self.acl:
+            self.acl.put()
         utility.clear_memcache()
 
     def delete(self):
