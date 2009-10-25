@@ -162,9 +162,6 @@ class File(db.Model):
         if acl:
             return acl
 
-        if self.acl_ref:
-            acl = self.acl_ref
-
         if not acl and self.parent_page:
             acl = self.parent_page.acl
 
