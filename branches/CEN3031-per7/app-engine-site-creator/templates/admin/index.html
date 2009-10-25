@@ -9,7 +9,8 @@
   <script type="text/javascript">
     dojo.require('dijit.Tree');
     dojo.require('dijit.Menu');
-    dojo.require('dojo.data.ItemFileReadStore');
+    dojo.require("dijit._tree.dndSource");
+    dojo.require('dojo.data.ItemFileWriteStore');
     dojo.require("dijit.Dialog");
     dojo.require("dijit.form.Button");
     dojo.require('dojo.parser');
@@ -17,16 +18,28 @@
     // Stores the TreeNode that has last been clicked on
     var selected_node = null;
 
-    dojo.addOnLoad(function() {
+    dojo.addOnLoad(function() 
+    {
       dojo.parser.parse();
     });
+
+	//on item tree , we only want to drop on containers, or the root node itself, not on items in the containers
+		function itemTreeCheckItemAcceptance(node,source) 
+		{
+			return true;
+		}
+
+		function dndAccept(source,nodes)
+		{
+			return true;
+		}
   </script>
 
 {% endblock %}
 
 {% block content %}
 
-<div dojoType="dojo.data.ItemFileReadStore"
+<div dojoType="dojo.data.ItemFileWriteStore"
      jsId="dataStore"
      url="/_treedata/"></div>
 
@@ -71,7 +84,10 @@
   </div>
 </div>
 
-<div dojoType="dijit.Tree" model="model" menu="tree_menu" style="float: left; width:100%">
+<div dojoType="dijit.Tree" model="model" menu="tree_menu" id="tree" 
+     dndController="dijit._tree.dndSource" checkAcceptance="dndAccept" 
+	checkItemAcceptance="itemTreeCheckItemAcceptance"
+	style="float: left; width:100%">
   <script type="dojo/connect">
     var menu = dijit.byId("tree_menu");
     menu.bindDomNode(this.domNode);
