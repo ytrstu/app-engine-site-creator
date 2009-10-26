@@ -25,7 +25,7 @@ import StringIO
 from django import http
 from django.core import urlresolvers
 from google.appengine.api import memcache
-from google.appengine.ext import db
+from google.appengine.ext import db, webapp
 from core import forms, utility
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore, AccessControlList
@@ -42,8 +42,8 @@ def admin_required(func):
         if request.user_is_admin:
             return func(request, *args, **kwds)  # pylint: disable-msg=W0142
         else:
-            return utility.forbidden(
-                request,
+            return webapp.set_status(
+                request,'403',
                 error_message='You must be an administrator to view this page.')
 
     return __wrapper
@@ -58,8 +58,8 @@ def super_user_required(func):
         if request.profile.is_superuser:
             return func(request, *args, **kwds)  # pylint: disable-msg=W0142
         else:
-            return utility.forbidden(
-                request,
+            return webapp.set_status(
+                request,'403',
                 error_message='You must be a superuser to view this page.')
 
     return __wrapper
@@ -129,9 +129,9 @@ def edit_acl(request):
     page = Page.get_by_id(int(page_id))
 
     if not page:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
     if not page.user_can_write(request.profile):
-        return utility.forbidden(request)
+        return webapp.set_status(request,'403')
 
     acl = page.acl
 
@@ -173,8 +173,8 @@ def edit_page(request, page_id=None, parent_id=None):
         page = Page.get_by_id(int(page_id))
         logging.debug('%s', page)
         if not page:
-            return utility.page_not_found(
-                request, 'No page exists with id %r.' % page_id)
+            return webapp.set_status(
+                request, '404', 'No page exists with id %r.' % page_id)
         elif not page.acl:
             if parent_id:
                 parent = Page.get_by_id(int(parent_id))
@@ -184,7 +184,7 @@ def edit_page(request, page_id=None, parent_id=None):
                 acl.put()
                 page.acl = acl
         if not page.user_can_write(request.profile):
-            return utility.forbidden(request)
+            return webapp.set_status(request,'403')
         files = list(
             FileStore.all().filter('parent_page =', page).order('name'))
         for item in files:
@@ -261,7 +261,7 @@ def new_page(request, parent_id):
             return utility.edit_updated_page(parent_page.key().id())
 
     if not parent_page.user_can_write(request.profile):
-        return utility.forbidden(request)
+        return webapp.set_status(request,'403')
     newpage = Page(name = 'New Page')
     if parent_page:
         newpage.parent_page = parent_page
@@ -281,7 +281,7 @@ def upload_file(request):
 
     """
     if not request.POST or not 'page_id' in request.POST:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
 
     page_id = request.POST['page_id']
     page = Page.get_by_id(int(page_id))
@@ -289,10 +289,10 @@ def upload_file(request):
     if not page:
         logging.warning('admin.upload_file was passed an invalid page id %r',
                         page_id)
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
 
     if not page.user_can_write(request.profile):
-        return utility.forbidden(request)
+        return webapp.set_status(request,'403')
 
     file_data = None
     file_name = None
@@ -304,14 +304,14 @@ def upload_file(request):
         url = request.POST['url']
         file_name = url.split('/')[-1]
     else:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
 
     if not url and not file_name:
         url = 'invalid URL'
 
     #if url == 'invalid URL'
     #  except forms.ValidationError, excption:
-    #    return utility.page_not_found(request, excption.messages[0])
+    #    return webapp.set_status(request, excption.messages[0])
 
     file_record = page.get_attachment(file_name)
 
@@ -347,12 +347,12 @@ def delete_file(request, page_id, file_id):
     record = FileStore.get_by_id(int(file_id))
     if record:
         if not record.user_can_write(request.profile):
-            return utility.forbidden(request)
+            return webapp.set_status(request,'403')
 
         record.delete()
         return utility.edit_updated_page(page_id, tab_name='files')
     else:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
 
 
 def delete_page(request, page_id):
@@ -372,10 +372,10 @@ def delete_page(request, page_id):
     page = Page.get_by_id(int(page_id))
 
     if not page:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
 
     if not page.user_can_write(request.profile):
-        return utility.forbidden(request)
+        return webapp.set_status(request,'403')
 
     page.delete()
 
@@ -397,7 +397,7 @@ def download_page_html(request, page_id):
     """
     page = Page.get_by_id(int(page_id))
     if not page:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
     response = http.HttpResponse(content=page.content, mimetype='text/html')
     response['Content-Disposition'] = 'attachment; filename=%s.html' % page.name
     return response
@@ -581,7 +581,7 @@ def edit_user(request, email):
 
     profile = UserProfile.load(email)
     if not profile:
-        return utility.page_not_found(request)
+        return webapp.set_status(request,'404')
     title = 'Edit user: ' + email
 
     return utility.edit_instance(request, UserProfile, forms.UserEditForm,

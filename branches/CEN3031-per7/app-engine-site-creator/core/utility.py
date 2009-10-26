@@ -73,38 +73,6 @@ def respond(request, template, params=None):
     return shortcuts.render_to_response(template, params)
 
 
-def forbidden(request, error_message=None):
-    """Returns a 403 response based on a template.
-
-    Args:
-      request: the http request that was forbidden
-      error_message: a message to display that will override the default message
-
-    Returns:
-      A http response with the status code of 403
-
-    """
-    response = respond(request, '403', {'error_message': error_message})
-    response.status_code = 403
-    return response
-
-
-def page_not_found(request, error_message=None):
-    """Returns a 404 response based on a template.
-
-    Args:
-      request: the http request that was forbidden
-      error_message: a message to display that will override the default
-      message
-
-    Returns:
-      A http response with the status code of 404
-    """
-    response = respond(request, '404', {'error_message': error_message})
-    response.status_code = 404
-    return response
-
-
 def edit_updated_page(page_id, message_id='', tab_name=''):
     """Issues a redirect to the edit form for page_id.
 

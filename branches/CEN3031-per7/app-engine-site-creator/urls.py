@@ -70,5 +70,5 @@ urlpatterns += defaults.patterns(
 
 ) + urlpatterns
 
-handler404 = 'utility.page_not_found'
+handler404 = 'webapp.set_status'
 handler500 = defaults.handler500
