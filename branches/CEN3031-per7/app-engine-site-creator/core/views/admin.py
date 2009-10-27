@@ -217,6 +217,11 @@ def edit_page(request, page_id=None, parent_id=None):
 
     form = forms.PageEditForm(data=request.POST, instance=page)
 
+    same_name = None
+    same_name = Page.all().filter('name = ', form.data['name']).filter('parent_page = ',page.parent_page).filter('created != ',page.created)
+    if same_name:
+        form.errors['name'] = 'The name \'%s\' already exists.' % (form.data['name'])
+
     if not form.errors:
         try:
             page = form.save(commit=False)
