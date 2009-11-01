@@ -37,8 +37,8 @@
     <ul>
       {% block user_header %}
 		{% if user %}
-		  {% if is_superuser %}<li><a href="{% url views.admin.index %}">Edit site</a></li>{% endif %}
-		  {% if is_admin %}<li><a href="{% url views.admin.display_memcache_info %}">Memcache</a></li>{% endif %}
+		  {% if is_superuser %}<li><a href="{% url core.views.admin.index %}">Edit site</a></li>{% endif %}
+		  {% if is_admin %}<li><a href="{% url core.views.admin.display_memcache_info %}">Memcache</a></li>{% endif %}
 		  <li><a href="{% if is_superuser %}/admin/edit/user/{{ user.email }}{% endif %}">{{ user.email }}</a></li>
 		  {% if sign_out %}<li><a href="{{sign_out}}">Sign out</a></li>{% endif %}
 		{% else %}

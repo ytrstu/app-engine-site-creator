@@ -32,6 +32,7 @@ urlpatterns = auth_patterns + defaults.patterns(
     (r'^admin/edit/sidebar/$', 'admin.edit_sidebar'),
     (r'^admin/edit/add_to_sidebar/(\d+)$', 'admin.add_to_sidebar'),
     (r'^admin/edit/user/([^\s/]*)$', 'admin.edit_user'),
+	(r'^admin/edit/choosetheme/$', 'admin.choose_theme'),
     (r'^admin/users/$', 'admin.filter_users'),
     (r'^admin/users/listgroups/$', 'admin.list_groups'),
     (r'^admin/users/newgroup/$', 'admin.new_group'),

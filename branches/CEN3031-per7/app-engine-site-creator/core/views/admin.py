@@ -22,6 +22,7 @@ import functools
 import logging
 import StringIO
 
+import configuration
 from django import http
 from django.core import urlresolvers
 from google.appengine.api import memcache
@@ -30,6 +31,8 @@ from core import forms, utility
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore, AccessControlList
 from core.models.users import UserGroup, UserProfile
+
+
 import yaml
 
 
@@ -67,8 +70,8 @@ def super_user_required(func):
 
 @super_user_required
 def index(request):
-    """Show the root administrative page."""
     return utility.respond(request, 'admin/index')
+    """Show the root administrative page."""
 
 
 @super_user_required
@@ -152,6 +155,33 @@ def edit_acl(request):
 
     return utility.edit_updated_page(page_id, tab_name='security',
                                    message_id='msgChangesSaved')
+
+def choose_theme(request):
+
+    
+    if request.method == 'GET':
+        if configuration.SYSTEM_THEME_NAME=='default':
+            return utility.respond(request,'admin/choose_theme',{'default' : "selected"})
+        elif configuration.SYSTEM_THEME_NAME=='ecobusiness':
+            return utility.respond(request,'admin/choose_theme',{'ecobusiness' : "selected"})
+        elif configuration.SYSTEM_THEME_NAME == 'nautica05':
+            return utility.respond(request,'admin/choose_theme',{'nautica05' : "selected"})
+
+    if request.method == 'POST':
+        result = request.POST['menu']
+        configuration.SYSTEM_THEME_NAME=result
+        if result=='default':
+            return utility.respond(request,'admin/choose_theme',{'default' : "selected"})
+        elif result=='ecobusiness':
+            return utility.respond(request,'admin/choose_theme',{'ecobusiness' : "selected"})
+        elif result == 'nautica05':
+            return utility.respond(request,'admin/choose_theme',{'nautica05' : "selected"})
+
+       
+
+	
+
+
 
 
 def edit_page(request, page_id=None, parent_id=None):
@@ -561,8 +591,8 @@ def delete_group(_request, group_id):
     group.delete()
 
     url = urlresolvers.reverse('core.views.admin.list_groups')
+    
     return http.HttpResponseRedirect(url)
-
 
 @super_user_required
 def edit_user(request, email):

@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+<h1>Choose a theme from the drop down menu, then click on "set" to make this your theme.</h1>
+{% if error_message %}
+{{ error_message }}
+{% endif %}
+<form action="{% url core.views.admin.choose_theme %}" method="post" name="choose" >
+	<select name="menu" >
+	<option value="default" {{default}}>Default</option>
+	<option value="ecobusiness" {{ecobusiness}}>Eco-Business</option>
+	<option value="nautica05" {{nautica05}}>Nautica05</option>
+	</select>
+	<input type="submit" value="Set">
+	
+</form>
+
+{% endblock %}
