@@ -76,7 +76,7 @@
 	<div id="footer">
 		<div class="container">
 			{% block footer %}
-				<center>{{ configuration.FOOTER_HTML }}</center>
+				<center>{{ configuration.FOOTER_HTML|safe }}</center>
 			{% endblock %}
 
 			{% block tracking %}
