@@ -162,7 +162,7 @@
     <img src="images/logo.gif" alt=""/>
 	
 	{% block footer %}
-		<center>{{ configuration.FOOTER_HTML }}</center>
+		<center>{{ configuration.FOOTER_HTML|safe }}</center>
 	{% endblock %}
 
   </div>
