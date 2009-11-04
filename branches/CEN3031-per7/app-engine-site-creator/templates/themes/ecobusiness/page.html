@@ -18,7 +18,7 @@
 
 {% block content %}
 	 {% if page.content %}
-	   <p>{{ page.content }}</p>
+	   <p>{{ page.content|safe }}</p>
 	 {% else %}
 	   <p>This page does not yet have any content.</p>
 	 {% endif %} 
