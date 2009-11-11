@@ -24,7 +24,7 @@ import yaml
 
 import configuration
 from google.appengine.api import users
-from google.appengine.ext import webapp
+from google.appengine.ext.webapp import Response
 from django import http
 from django.core import urlresolvers
 from django.utils import simplejson
@@ -55,7 +55,7 @@ def send_page(page, request):
         if not page.user_can_read(profile):
             logging.warning('User %s made an invalid attempt to access'
                             'page %s' % (profile.email, page.name))
-            return webapp.set_status(request,'403')
+            return Response.set_status(request,'403')
 
     files = page.attached_files()
     files = [file_obj for file_obj in files if not file_obj.is_hidden]
@@ -90,7 +90,7 @@ def send_file(file_record, request):
     if not file_record.user_can_read(profile):
         logging.warning('User %s made an invalid attempt to access file %s' %
                         (profile.email, file_record.name))
-        return webapp.set_status(request,'403')
+        return Response.set_status(request,'403')
 
     expires = datetime.datetime.now() + configuration.FILE_CACHE_TIME
     response = http.HttpResponse(content=file_record.data, mimetype=mimetype)
@@ -147,7 +147,7 @@ def get_url(request, path_str):
     if isinstance(item, FileStore):
         return send_file(item, request)
 
-    return webapp.set_status(request,'404')
+    return Response.set_status(request,'404')
 
 
 def get_tree_data(request):

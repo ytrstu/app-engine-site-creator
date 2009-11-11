@@ -55,8 +55,7 @@ def respond(request, template, params=None):
         params['sign_out'] = users.CreateLogoutURL('/')
         params['is_admin'] = users.is_current_user_admin()
     else:
-        params['sign_in'] = users.CreateLoginURL(request.path)
-
+		params['sign_in'] = users.CreateLoginURL(request.path)
     if hasattr(request, 'profile') and request.profile is not None:
         profile = request.profile
         params['sidebar'] = Sidebar.render(profile)

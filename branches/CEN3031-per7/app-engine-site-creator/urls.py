@@ -71,5 +71,5 @@ urlpatterns += defaults.patterns(
 
 ) + urlpatterns
 
-handler404 = 'webapp.set_status'
+handler404 = 'Response.set_status'
 handler500 = defaults.handler500
