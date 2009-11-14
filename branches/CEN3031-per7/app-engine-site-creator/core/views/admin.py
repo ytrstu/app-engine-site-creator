@@ -29,6 +29,7 @@ from django.core import urlresolvers
 from google.appengine.api import memcache
 from google.appengine.ext import db
 from core import forms, utility
+from core.views.main import get_root
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore, AccessControlList
 from core.models.users import UserGroup, UserProfile
@@ -167,11 +168,13 @@ def choose_theme(request):
 
     if request.method == 'POST':
         sel = request.POST['menu']
+        configuration.SYSTEM_THEME_NAME=sel
         if sel == 'frames':
             PRE='themes/frames/admin'
+            to_page='/admin/edit/choosetheme'
+            return utility.respond(request,'themes/frames/base',{'to_page':to_page})
         else:
             PRE='admin'
-        configuration.SYSTEM_THEME_NAME=sel
 
     return utility.respond(request,PRE+'/choose_theme',{'selected' : sel,
             'themes': themes})

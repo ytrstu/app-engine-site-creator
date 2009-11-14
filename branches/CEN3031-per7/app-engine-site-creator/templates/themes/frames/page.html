@@ -1,4 +1,46 @@
 <html>
+    <head>
+    <title>
+    {% block title %}
+      {% if title %} {{ title }} {% else %} {{ configuration.SYSTEM_TITLE }} {% endif %}
+    {% endblock %}
+    </title>
+
+    {% block style %}
+    <style type="text/css">
+      @import "http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojo/resources/dojo.css";
+      @import "http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dijit/themes/tundra/tundra.css";
+      @import "/static/css/default.css";
+    </style>
+    {% endblock %}
+
+        <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojo/dojo.xd.js"
+            djConfig="parseOnLoad:false,isDebug:false"></script>
+        <script type="text/javascript">
+        {% block jscript %}{% endblock %}
+            dojo.addOnLoad( function() {
+                var links = dojo.query("a");
+                var i;
+                for(i = 0; i < links.length; i++)
+                {
+                    var link = links[i];
+                    if(link.pathname == "/")
+                        link.pathname = "/frames/root/";
+                    if(link.href.match("_ah/login?"))
+                    {
+                        //alert(link);
+                        link.target="_parent";
+                        link.href = link.href.replace("frames/root/", "");
+                    }
+                }
+                {% block onload %}
+                {% endblock %}
+            });
+        </script>
+    {% block includes %}
+    {% endblock %}
+    </head>
     <body>
     <div id="header">
       <div id="headerLogo">
@@ -28,7 +70,7 @@
 	{% endif %}
 {% endblock %}
 {% block heading %}
-  	{% block title %}
+  	{% block pagetitle %}
 		{{ page.title|escape }}
 	{% endblock %}	
 {% endblock %}

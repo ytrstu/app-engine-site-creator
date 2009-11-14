@@ -33,6 +33,7 @@ urlpatterns = auth_patterns + defaults.patterns(
     (r'^admin/edit/sidebar/$', 'admin.edit_sidebar'),
     (r'^admin/edit/add_to_sidebar/(\d+)$', 'admin.add_to_sidebar'),
     (r'^admin/edit/user/([^\s/]*)$', 'admin.edit_user'),
+	(r'^admin/edit/choosetheme$', 'admin.choose_theme'),
 	(r'^admin/edit/choosetheme/$', 'admin.choose_theme'),
     (r'^admin/users/$', 'admin.filter_users'),
     (r'^admin/users/listgroups/$', 'admin.list_groups'),
@@ -70,6 +71,7 @@ urlpatterns += defaults.patterns(
     (r'^__debug__/template_source/$', 'core.middleware.debug_toolbar.views.template_source'),
     (r'^frames/sidebar/$', 'core.views.main.get_sidebar'),
     (r'^frames/root/$', 'core.views.main.frame_root'),
+    (r'^frames/root/(?P<to_page>.*)$', 'core.views.main.get_root'),
     (r'^$', 'core.views.main.get_root'),
     (r'^(.*)$', 'core.views.main.get_url'),
 

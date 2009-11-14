@@ -6,7 +6,7 @@
 {% if error_message %}
 {{ error_message }}
 {% endif %}
-<h1> Current theme: </h1> <form action="{% url core.views.admin.choose_theme %}" method="post" name="choose" >
+<h1> Current theme: </h1> <form action="{% url core.views.admin.choose_theme %}" method="post" name="choose" target="_parent" >
 	<select id="menu" name="menu" onChange="preview.src='/static/images/'+menu.options[menu.selectedIndex].value+'.jpg'">
     {% for opt in themes %}
         {% ifequal opt selected %}

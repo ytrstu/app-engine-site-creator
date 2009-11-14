@@ -197,12 +197,13 @@ def page_list(request):
 def get_sidebar(request):
     return utility.respond(request, 'themes/frames/sidebar')
 
-def get_root(request):
+def get_root(request, to_page=None):
     import configuration
     if configuration.SYSTEM_THEME_NAME == 'frames':
-        #import logging
-        #logging.debug('Referrer: %s', request.META["HTTP_REFERER"])
-        return utility.respond(request, 'themes/frames/base',{}) 
+        if to_page:
+            return utility.respond(request, 'themes/frames/base',
+                    {'to_page':to_page}) 
+        return utility.respond(request, 'themes/frames/base',{})
     return get_url(request, "/")
 
 def frame_root(request): 
