@@ -1,5 +1,22 @@
 <html>
     <body>
+    <div id="header">
+      <div id="headerLogo">
+        <img src="/static/images/logo.png" alt="AppEngine Site Creator" />
+      </div>
+      <div id="userHeader">
+        {% block user_header %}
+        {% if user %}
+          <b>{{ user.email }}</b>
+          {% if is_superuser %} | <a href="{% url core.views.admin.index %}">Edit site</a>{% endif %}
+          {% if is_admin %} | <a href="{% url core.views.admin.display_memcache_info %}">Memcache</a>{% endif %}
+          {% if sign_out %} | <a href="{{sign_out}}">Sign out</a>{% endif %}
+        {% else %}
+          {% if sign_in %}<a href="{{sign_in}}">Sign in</a>{%endif%}
+        {% endif %}
+        {% endblock %}
+      </div>
+    </div>
 {% block breadcrumbs %}
 	{% if page.breadcrumbs %}
 		{% for breadcrumb in page.breadcrumbs %}
