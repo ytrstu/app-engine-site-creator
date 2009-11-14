@@ -1,0 +1,34 @@
+<html>
+    <body>
+        {% if is_admin %}
+            <h1></h1>
+
+            <ul>
+              <li><a target ="showframe" href="/frames/root/">Main site</a></li>
+              <li><a target ="showframe" href="/frames/admin/gethelp/">Help</a></li>
+            </ul>
+
+            <h1>Pages</h1>
+            <ul>
+              <li><a target ="showframe" href="{% url core.views.admin.index %}">Sitemap</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.recently_modified %}">Recently modified</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.new_page None %}">Create page</a></li>
+              <li><atarget ="showframe"  href="{% url core.views.admin.edit_sidebar %}">Edit sidebar</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.choose_theme %}">Choose Theme</a></li>	
+            </ul>
+
+            <h1>Users</h1>
+            <ul>
+              <li><a target ="showframe" href="{% url core.views.admin.filter_users %}">List users</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.list_groups %}">List groups</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.edit_user None %}">Find user</a></li>
+              <li><a target ="showframe" href="{% url core.views.admin.bulk_edit_users %}">Bulk edit users</a></li>
+            {% else %}
+              {% if sidebar %}
+               {{ sidebar|safe }}
+              {% else %}
+                 Sidebar not defined.
+              {% endif %}
+          {% endif %}
+    </body>
+</html>
