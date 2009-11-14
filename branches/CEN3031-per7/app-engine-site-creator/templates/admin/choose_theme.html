@@ -8,9 +8,14 @@
 {% endif %}
 <h1> Current theme: </h1> <form action="{% url core.views.admin.choose_theme %}" method="post" name="choose" >
 	<select id="menu" name="menu" onChange="preview.src='/static/images/'+menu.options[menu.selectedIndex].value+'.jpg'">
-	<option value="default" {{default}}>Default</option>
-	<option value="ecobusiness" {{ecobusiness}}>Eco-Business</option>
-	<option value="nautica05" {{nautica05}}>Nautica05</option>
+    {% for opt in themes %}
+        {% ifequal opt selected %}
+            <option value="{{opt}}" selected>{{opt}}</option>
+        {% else %}
+            <option value="{{opt}}">{{opt}}</option>
+        {% endifequal %}
+
+    {% endfor %}
 	</select>
 	<input type="submit" value="Set">
 	

@@ -20,6 +20,7 @@
 # pylint: disable-msg=C0103,C0301
 import os
 from django.conf.urls import defaults
+from django.conf.urls.defaults import *
 from ragendja.urlsauto import urlpatterns
 from ragendja.auth.urls import urlpatterns as auth_patterns
 
@@ -67,9 +68,10 @@ urlpatterns += defaults.patterns(
     (r'^__debug__/sql_explain/$', 'core.middleware.debug_toolbar.views.sql_explain'),
     (r'^__debug__/sql_profile/$', 'core.middleware.debug_toolbar.views.sql_profile'),
     (r'^__debug__/template_source/$', 'core.middleware.debug_toolbar.views.template_source'),
+    (r'^frames/sidebar/$', 'core.views.main.get_sidebar'),
+    (r'^frames/root/$', 'core.views.main.frame_root'),
+    (r'^$', 'core.views.main.get_root'),
     (r'^(.*)$', 'core.views.main.get_url'),
 
 ) + urlpatterns
 
-handler404 = 'Response.set_status'
-handler500 = defaults.handler500

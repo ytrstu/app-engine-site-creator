@@ -24,10 +24,10 @@ import StringIO
 
 import configuration
 from django import http
+from django.http import HttpResponse, Http404
 from django.core import urlresolvers
 from google.appengine.api import memcache
 from google.appengine.ext import db
-from google.appengine.ext.webapp import Response
 from core import forms, utility
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore, AccessControlList
@@ -36,6 +36,7 @@ from core.models.users import UserGroup, UserProfile
 
 import yaml
 
+PRE='themes/frames/admin'
 
 def admin_required(func):
     """Ensure that the logged in user is an administrator."""
@@ -46,9 +47,7 @@ def admin_required(func):
         if request.user_is_admin:
             return func(request, *args, **kwds)  # pylint: disable-msg=W0142
         else:
-            return Response.set_status(
-                request,'403',
-                error_message='You must be an administrator to view this page.')
+            return HttpResponse(status=403)
 
     return __wrapper
 
@@ -62,16 +61,14 @@ def super_user_required(func):
         if request.profile.is_superuser:
             return func(request, *args, **kwds)  # pylint: disable-msg=W0142
         else:
-            return Response.set_status(
-                request,'403',
-                error_message='You must be a superuser to view this page.')
+            return HttpResponse(status=403)
 
     return __wrapper
 
 
 @super_user_required
 def index(request):
-    return utility.respond(request, 'admin/index')
+    return utility.respond(request, PRE+'/index')
     """Show the root administrative page."""
 
 
@@ -79,13 +76,13 @@ def index(request):
 def recently_modified(request):
     """Show the 10 most recently modified pages."""
     pages = Page.all().order('modified').fetch(10)
-    return utility.respond(request, 'admin/recently_modified', {'pages': pages})
+    return utility.respond(request, PRE+'/recently_modified', {'pages': pages})
 
 
 @super_user_required
 def get_help(request):
     """Return a help page for the site maintainer."""
-    return utility.respond(request, 'admin/help')
+    return utility.respond(request, PRE+'/help')
 
 
 def edit_acl(request):
@@ -133,9 +130,9 @@ def edit_acl(request):
     page = Page.get_by_id(int(page_id))
 
     if not page:
-        return Response.set_status(request,'404')
+        raise Http404
     if not page.user_can_write(request.profile):
-        return Response.set_status(request,'403')
+        return HttpResponse(status=403)
 
     acl = page.acl
 
@@ -159,25 +156,25 @@ def edit_acl(request):
 
 def choose_theme(request):
 
-    
-    if request.method == 'GET':
-        if configuration.SYSTEM_THEME_NAME=='default':
-            return utility.respond(request,'admin/choose_theme',{'default' : "selected"})
-        elif configuration.SYSTEM_THEME_NAME=='ecobusiness':
-            return utility.respond(request,'admin/choose_theme',{'ecobusiness' : "selected"})
-        elif configuration.SYSTEM_THEME_NAME == 'nautica05':
-            return utility.respond(request,'admin/choose_theme',{'nautica05' : "selected"})
+    global PRE
+    import logging, settings, os
+    tdir = settings.TEMPLATE_DIRS[0] + "/themes/"
+    themes = []
+    for file in os.listdir(tdir):
+        if os.path.isdir(tdir+file) and not file.startswith("."):
+            themes.append(file)
+    sel = configuration.SYSTEM_THEME_NAME
 
     if request.method == 'POST':
-        result = request.POST['menu']
-        configuration.SYSTEM_THEME_NAME=result
-        if result=='default':
-            return utility.respond(request,'admin/choose_theme',{'default' : "selected"})
-        elif result=='ecobusiness':
-            return utility.respond(request,'admin/choose_theme',{'ecobusiness' : "selected"})
-        elif result == 'nautica05':
-            return utility.respond(request,'admin/choose_theme',{'nautica05' : "selected"})
+        sel = request.POST['menu']
+        if sel == 'frames':
+            PRE='themes/frames/admin'
+        else:
+            PRE='admin'
+        configuration.SYSTEM_THEME_NAME=sel
 
+    return utility.respond(request,PRE+'/choose_theme',{'selected' : sel,
+            'themes': themes})
        
 
 	
@@ -204,8 +201,7 @@ def edit_page(request, page_id=None, parent_id=None):
         page = Page.get_by_id(int(page_id))
         logging.debug('%s', page)
         if not page:
-            return Response.set_status(
-                request, '404', 'No page exists with id %r.' % page_id)
+            raise Http404
         elif not page.acl:
             if parent_id:
                 parent = Page.get_by_id(int(parent_id))
@@ -215,7 +211,7 @@ def edit_page(request, page_id=None, parent_id=None):
                 acl.put()
                 page.acl = acl
         if not page.user_can_write(request.profile):
-            return Response.set_status(request,'403')
+            return HttpResponse(status=403)
         files = list(
             FileStore.all().filter('parent_page =', page).order('name'))
         for item in files:
@@ -242,7 +238,7 @@ def edit_page(request, page_id=None, parent_id=None):
 
     if not request.POST:
         form = forms.PageEditForm(data=None, instance=page)
-        return utility.respond(request, 'admin/edit_page',
+        return utility.respond(request, PRE+'/edit_page',
                                {'form': form, 'page': page, 'files': files,
                                 'acl_data': acl_data})
 
@@ -259,7 +255,7 @@ def edit_page(request, page_id=None, parent_id=None):
         except ValueError, err:
             form.errors['__all__'] = unicode(err)
     if form.errors:
-        return utility.respond(request, 'admin/edit_page',
+        return utility.respond(request, PRE+'/edit_page',
                                {'form': form, 'page': page, 'files': files})
 
     page.content = request.POST['editorHtml']
@@ -297,7 +293,7 @@ def new_page(request, parent_id):
             return utility.edit_updated_page(parent_page.key().id())
 
     if not parent_page.user_can_write(request.profile):
-        return Response.set_status(request,'403')
+        return HttpResponse(status=403)
     newpage = Page(name = 'New Page')
     if parent_page:
         newpage.parent_page = parent_page
@@ -317,18 +313,18 @@ def upload_file(request):
 
     """
     if not request.POST or not 'page_id' in request.POST:
-        return Response.set_status(request,'404')
+        raise Http404
 
     page_id = request.POST['page_id']
     page = Page.get_by_id(int(page_id))
 
     if not page:
-        logging.warning('admin.upload_file was passed an invalid page id %r',
+        logging.warning(PRE+'.upload_file was passed an invalid page id %r',
                         page_id)
-        return Response.set_status(request,'404')
+        raise Http404
 
     if not page.user_can_write(request.profile):
-        return Response.set_status(request,'403')
+        return HttpResponse(status=403)
 
     file_data = None
     file_name = None
@@ -340,7 +336,7 @@ def upload_file(request):
         url = request.POST['url']
         file_name = url.split('/')[-1]
     else:
-        return Response.set_status(request,'404')
+        raise Http404
 
     if not url and not file_name:
         url = 'invalid URL'
@@ -383,12 +379,12 @@ def delete_file(request, page_id, file_id):
     record = FileStore.get_by_id(int(file_id))
     if record:
         if not record.user_can_write(request.profile):
-            return Response.set_status(request,'403')
+            return HttpResponse(status=403)
 
         record.delete()
         return utility.edit_updated_page(page_id, tab_name='files')
     else:
-        return Response.set_status(request,'404')
+        raise Http404
 
 
 def delete_page(request, page_id):
@@ -408,10 +404,10 @@ def delete_page(request, page_id):
     page = Page.get_by_id(int(page_id))
 
     if not page:
-        return Response.set_status(request,'404')
+        raise Http404
 
     if not page.user_can_write(request.profile):
-        return Response.set_status(request,'403')
+        return HttpResponse(status=403)
 
     page.delete()
 
@@ -433,7 +429,7 @@ def download_page_html(request, page_id):
     """
     page = Page.get_by_id(int(page_id))
     if not page:
-        return Response.set_status(request,'404')
+        raise Http404
     response = http.HttpResponse(content=page.content, mimetype='text/html')
     response['Content-Disposition'] = 'attachment; filename=%s.html' % page.name
     return response
@@ -451,7 +447,7 @@ def filter_users(request):
 
     """
     groups = UserGroup.all().order('name')
-    return utility.respond(request, 'admin/filter_users', {'groups': groups})
+    return utility.respond(request, PRE+'/filter_users', {'groups': groups})
 
 
 @super_user_required
@@ -466,7 +462,7 @@ def list_groups(request):
 
     """
     groups = UserGroup.all().order('name')
-    return utility.respond(request, 'admin/list_groups', {'groups': groups})
+    return utility.respond(request, PRE+'/list_groups', {'groups': groups})
 
 
 @super_user_required
@@ -488,7 +484,7 @@ def view_group(request, group_id):
             users = UserProfile.get(group.users)
         else:
             users = []
-    return utility.respond(request, 'admin/view_group', {'users': users})
+    return utility.respond(request, PRE+'/view_group', {'users': users})
 
 
 @super_user_required
@@ -571,7 +567,7 @@ def edit_group(request, group_id):
     if group_id:
         group = UserGroup.get_by_id(int(group_id))
     return utility.edit_instance(request, UserGroup, forms.GroupEditForm,
-                                 'admin/edit_group',
+                                 PRE+'/edit_group',
                                  urlresolvers.reverse('core.views.admin.list_groups'),
                                  group_id, group=group)
 
@@ -613,15 +609,15 @@ def edit_user(request, email):
                                        args=[request.POST['email']])
             return http.HttpResponseRedirect(url)
         else:
-            return utility.respond(request, 'admin/edit_user', {'title': 'Edit user'})
+            return utility.respond(request, PRE+'/edit_user', {'title': 'Edit user'})
 
     profile = UserProfile.load(email)
     if not profile:
-        return Response.set_status(request,'404')
+        raise Http404
     title = 'Edit user: ' + email
 
     return utility.edit_instance(request, UserProfile, forms.UserEditForm,
-                                 'admin/edit_user',
+                                 PRE+'/edit_user',
                                  urlresolvers.reverse('core.views.admin.index'),
                                  profile.key().id(), title=title, profile=profile)
 
@@ -638,7 +634,7 @@ def bulk_edit_users(request):
 
     """
     if not request.POST:
-        return utility.respond(request, 'admin/bulk_edit_users',
+        return utility.respond(request, PRE+'/bulk_edit_users',
                                {'title': 'Bulk user upload form'})
 
     data = request.POST['users_text']
@@ -733,7 +729,7 @@ def edit_sidebar(request):
             error_message = 'Invalid YAML, missing key %s' % error
 
         if error_message:
-            return utility.respond(request, 'admin/edit_sidebar',
+            return utility.respond(request, PRE+'/edit_sidebar',
                                    {'yaml': yaml_data,
                                     'error_message': error_message})
 
@@ -743,7 +739,7 @@ def edit_sidebar(request):
         yaml_data = ''
         if sidebar:
             yaml_data = sidebar.yaml
-        return utility.respond(request, 'admin/edit_sidebar', {'yaml': yaml_data})
+        return utility.respond(request, PRE+'/edit_sidebar', {'yaml': yaml_data})
 
 
 @admin_required
@@ -774,5 +770,5 @@ def display_memcache_info(request):
 
     """
     # pylint: disable-msg=E1101
-    return utility.respond(request, 'admin/memcache_info',
+    return utility.respond(request, PRE+'/memcache_info',
                            {'memcache_info': memcache.get_stats()})

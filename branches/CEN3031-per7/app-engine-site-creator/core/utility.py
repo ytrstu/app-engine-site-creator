@@ -69,6 +69,8 @@ def respond(request, template, params=None):
     if not template.endswith('.html'):
         template += '.html'
 
+    import logging
+    logging.debug('template: %s\n', template)
     return shortcuts.render_to_response(template, params)
 
 

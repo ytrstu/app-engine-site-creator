@@ -26,8 +26,10 @@ import configuration
 from google.appengine.api import users
 from google.appengine.ext.webapp import Response
 from django import http
+from django.http import HttpResponse, Http404
 from django.core import urlresolvers
 from django.utils import simplejson
+from django.http import Http404
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore
 from core import utility
@@ -55,7 +57,7 @@ def send_page(page, request):
         if not page.user_can_read(profile):
             logging.warning('User %s made an invalid attempt to access'
                             'page %s' % (profile.email, page.name))
-            return Response.set_status(request,'403')
+            return HttpResponse(status=403)
 
     files = page.attached_files()
     files = [file_obj for file_obj in files if not file_obj.is_hidden]
@@ -90,7 +92,7 @@ def send_file(file_record, request):
     if not file_record.user_can_read(profile):
         logging.warning('User %s made an invalid attempt to access file %s' %
                         (profile.email, file_record.name))
-        return Response.set_status(request,'403')
+        return HttpResponse(status=403)
 
     expires = datetime.datetime.now() + configuration.FILE_CACHE_TIME
     response = http.HttpResponse(content=file_record.data, mimetype=mimetype)
@@ -147,7 +149,7 @@ def get_url(request, path_str):
     if isinstance(item, FileStore):
         return send_file(item, request)
 
-    return Response.set_status(request,'404')
+    raise Http404
 
 
 def get_tree_data(request):
@@ -191,3 +193,21 @@ def get_tree_data(request):
 def page_list(request):
     """List all pages."""
     return utility.respond(request, 'sitemap')
+
+def get_sidebar(request):
+    return utility.respond(request, 'themes/frames/sidebar')
+
+def get_root(request):
+    import configuration
+    if configuration.SYSTEM_THEME_NAME == 'frames':
+        #import logging
+        #logging.debug('Referrer: %s', request.META["HTTP_REFERER"])
+        return utility.respond(request, 'themes/frames/base',{}) 
+    return get_url(request, "/")
+
+def frame_root(request): 
+    page = Page.get_root()
+    files = page.attached_files()
+    is_editor = page.user_can_write(request.profile)
+    return utility.respond(request, 'themes/frames/page', 
+            {'page': page, 'files': files, 'is_editor': is_editor})

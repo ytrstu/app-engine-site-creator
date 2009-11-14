@@ -281,6 +281,9 @@ class Page(File):
             root = Page.all().filter('parent_page =', None).get()
             #logging.debug('Parent: %s', root)
             utility.memcache_set(key, root)
+        if not root:
+            root = utility.set_up_data_store()
+            utility.memcache_set(key,root)
         return root
 
     @property

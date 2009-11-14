@@ -15,24 +15,35 @@
     dojo.require("dijit.form.Button");
     dojo.require('dojo.parser');
 
+
     // Stores the TreeNode that has last been clicked on
     var selected_node = null;
 
     dojo.addOnLoad(function() 
     {
-      dojo.parser.parse();
+    dojo.parser.parse();
+    dojo.data.ItemFileWriteStore._saveCustom = treeSave;
+    //var x = dojo.data.ItemFileWriteStore._saveCustom;
+    //alert(x);
     });
 
 	//on item tree , we only want to drop on containers, or the root node itself, not on items in the containers
-		function itemTreeCheckItemAcceptance(node,source) 
-		{
-			return true;
-		}
+    function itemTreeCheckItemAcceptance(node,source) 
+    {
+        return true;
+    }
 
-		function dndAccept(source,nodes)
-		{
-			return true;
-		}
+    function dndAccept(source,nodes)
+    {
+        return true;
+    }
+
+    function treeSave(saveCompleteCallback, saveFailedCallback){
+        //  xhrPost/xhrPut your data back to your server (convert it to the server format first if need be)
+        // 'this' keyword refers to the ItemFileWriteStore instance being extended
+        alert('hey');
+        saveCompleteCallback();
+    }
   </script>
 
 {% endblock %}
@@ -40,10 +51,22 @@
 {% block content %}
 
 <div dojoType="dojo.data.ItemFileWriteStore"
-     jsId="dataStore"
-     url="/_treedata/"></div>
+    jsId="dataStore"
+    id="dataStore"
+     url="/_treedata/"
+     >
+<script type="dojo/method" event="_saveCustom" args="saveCompleteCallback, saveFailedCallback">
+                //  xhrPost/xhrPut your data back to your server (convert it to the server format first if need be)
+                // 'this' keyword refers to the ItemFileWriteStore instance being enhanced
+                // dojo/method replaces the _saveCustom method of the ItemFileWriteStore (currently undefined)
+                alert('hey2');
+                saveCompleteCallback();
+        </script>
+ </div>
 
-<div dojoType="dijit.tree.TreeStoreModel"
+
+ <div 
+     dojoType="dijit.tree.TreeStoreModel"
      jsId="model"
      store="dataStore"
      query="{title:'*'}"></div>
@@ -99,6 +122,7 @@
     });
   </script>
 </div>
+<button dojoType="dijit.form.Button" onclick="dijit.byId('tree').model.store.save();">Save</button>
 
 <div style="font-size:small; margin-top:40px; float:left;">
   <i>Right click on a page for options.</i>

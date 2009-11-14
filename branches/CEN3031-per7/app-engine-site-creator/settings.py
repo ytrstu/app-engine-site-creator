@@ -44,14 +44,14 @@ from core.middleware import middleware, debug_toolbar
 APPEND_SLASH = False
 # DEBUG = os.environ['SERVER_SOFTWARE'].startswith('Dev')
 DATABASE_ENGINE = 'appengine'
-DEBUG = True;
+DEBUG = True
 INTERNAL_IPS = ('localhost',)
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     #'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.contrib.auth.middleware.AuthenticationMiddleware',        
     'core.middleware.middleware.AddUserToRequestMiddleware',
-    'core.middleware.debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'core.middleware.debug_toolbar.middleware.DebugToolbarMiddleware',
     #'ragendja.auth.middleware.GoogleAuthenticationMiddleware',
 )
 ROOT_PATH = os.path.dirname(__file__)
