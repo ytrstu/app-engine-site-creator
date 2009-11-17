@@ -333,8 +333,8 @@ def upload_file(request):
     file_name = None
     url = None
     if request.FILES and 'attachment' in request.FILES:
-        file_name = request.FILES['attachment']['filename']
-        file_data = request.FILES['attachment']['content']
+        file_name = request.FILES['attachment'].name
+        file_data = request.FILES['attachment'].read()
     elif 'url' in request.POST:
         url = request.POST['url']
         file_name = url.split('/')[-1]

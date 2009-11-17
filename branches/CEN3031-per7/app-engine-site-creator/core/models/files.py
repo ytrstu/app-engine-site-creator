@@ -239,6 +239,11 @@ class File(db.Model):
         return '%s%s/' % (self.parent_page.path, self.name)
 
     @property
+    def filepath(self):
+        """Returns the URL path for a file attachment. Removes trailing slash."""
+        return '%s%s' % (self.parent_page.path, self.name)
+
+    @property
     def is_root(self):
         """Returns True for the root page, False for all others."""
         return self.parent_page is None

@@ -44,7 +44,7 @@
 					      {% if file.url %}
 					        <a href="{{ file.url }}">
 					      {% else %}
-					        <a href="{% url views.main.get_url file.path %}">
+					        <a href="{% url views.main.get_url file.filepath %}">
 					      {% endif %}
 					          {{ file.name }}</a>
 					    {% endfor %}
