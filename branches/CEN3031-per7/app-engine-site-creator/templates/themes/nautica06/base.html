@@ -105,12 +105,16 @@
       	<h1>
       	{% block heading %}
 			{% if title %} {{ title }} {% else %} {{ configuration.SYSTEM_TITLE }} {% endif %}
-		{% endblock %}
+		{% endblock %}		
 		</h1>
 		
 		{% block content %}
 		  <p>This page does not yet have any content.</p>
 		{% endblock %}
+		
+		{% block children %}
+		{% endblock %}		
+				
     </div>
     <!-- Left column end -->
 

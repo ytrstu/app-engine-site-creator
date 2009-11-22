@@ -52,10 +52,8 @@
 		</div>
 		<!-- main content area -->
 		<div id="center">
-			<h3>
 			{% block breadcrumbs %}				
 			{% endblock%}
-			<h3>
 			<div class="article_wrapper">				
 				<h2>
 				{% block heading %}
@@ -66,6 +64,8 @@
 				  <p>This page does not yet have any content.</p>
 				{% endblock %}
 			</div>
+			{% block children %}
+			{% endblock %}
 			<hr />
 		</div>
 		{% block right_column %}

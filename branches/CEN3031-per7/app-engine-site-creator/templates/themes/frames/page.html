@@ -96,4 +96,17 @@
   {% endif %}
 {% endblock %}
 
+{% block children %}
+    {% if page.page_children %}
+        {% for page in page.page_children %}
+			{% ifequal page.name 'New Page' %}
+			{% else %}
+                <a href="{{ page.path }}">{{ page.name }}</a>
+	            {% if not forloop.last %}
+                    ||
+                {% endif %}
+			{% endifequal %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
 </body></html>

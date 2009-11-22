@@ -30,7 +30,19 @@
   {% else %}
     This page does not yet have any content.
   {% endif %}
-
+  {% if page.page_children %}
+    <div class="children">
+    {% for page in page.page_children %}
+	  {% ifequal page.name 'New Page' %}
+	  {% else %}
+        <a href="{{ page.path }}">{{ page.name }}</a>
+	    {% if not forloop.last %}
+          ||
+        {% endif %}
+	  {% endifequal %}
+    {% endfor %}
+    </div>
+  {% endif %}
   {% if files %}
   <div id="attachments">
     <h1>Attached files:</h1>
@@ -48,3 +60,4 @@
   </div>
   {% endif %}
 {% endblock %}
+

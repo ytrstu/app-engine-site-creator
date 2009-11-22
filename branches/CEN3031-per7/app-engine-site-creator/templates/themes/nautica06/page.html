@@ -10,6 +10,7 @@
 	    {% endfor %}
 	{% endif %}
 {% endblock %}
+
 {% block heading %}
   	{% block title %}
 		{{ page.title|escape }}
@@ -22,6 +23,20 @@
 	 {% else %}
 	   <p>This page does not yet have any content.</p>
 	 {% endif %} 
+{% endblock %}
+
+{% block children %}
+    {% if page.page_children %}
+        {% for page in page.page_children %}
+			{% ifequal page.name 'New Page' %}
+			{% else %}
+                <a href="{{ page.path }}">{{ page.name }}</a>
+	            {% if not forloop.last %}
+                    ||
+                {% endif %}
+			{% endifequal %}
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block right_column %}

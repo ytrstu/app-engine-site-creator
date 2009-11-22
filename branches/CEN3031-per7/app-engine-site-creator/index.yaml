@@ -15,3 +15,9 @@ indexes:
   properties:
   - name: parent_page
   - name: name
+
+- kind: Page
+  properties:
+  - name: name
+  - name: parent_page
+  - name: created
