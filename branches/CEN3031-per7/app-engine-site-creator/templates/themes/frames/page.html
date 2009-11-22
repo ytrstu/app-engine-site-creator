@@ -25,13 +25,15 @@
                 for(i = 0; i < links.length; i++)
                 {
                     var link = links[i];
-                    if(link.pathname == "/")
-                        link.pathname = "/frames/root/";
+                    if(link.pathname == "/" || link.pathname == "")
+                    {
+                        link.href = link.href.replace(/\/$/,"/frames/root/");
+                    }
                     if(link.href.match("_ah/login?"))
                     {
-                        //alert(link);
-                        link.target="_parent";
-                        link.href = link.href.replace("frames/root/", "");
+                        //link.target="_parent";
+                        //link.search="?continue=/&to_page="+link.baseURI;
+                        link.href = link.href.replace(link.baseURI,"/");
                     }
                 }
                 {% block onload %}
@@ -52,9 +54,9 @@
           <b>{{ user.email }}</b>
           {% if is_superuser %} | <a href="{% url core.views.admin.index %}">Edit site</a>{% endif %}
           {% if is_admin %} | <a href="{% url core.views.admin.display_memcache_info %}">Memcache</a>{% endif %}
-          {% if sign_out %} | <a href="{{sign_out}}">Sign out</a>{% endif %}
+          {% if sign_out %} | <a target="_parent" href="/_ah/login?continue=/&action=Logout">Sign out</a>{% endif %}
         {% else %}
-          {% if sign_in %}<a href="{{sign_in}}">Sign in</a>{%endif%}
+          {% if sign_in %}<a target="_parent" href="/_ah/login?continue=/">Sign in</a>{%endif%}
         {% endif %}
         {% endblock %}
       </div>
