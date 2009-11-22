@@ -551,7 +551,10 @@ def new_group(request):
       A HttpResponse object.
 
     """
-    return edit_group(request, None)
+    # this needs to be unique so find a better way to do this
+    newgroup = UserGroup(name="New Group")
+    newgroup.put()
+    return edit_group(request, newgroup.key().id())
 
 
 @super_user_required
