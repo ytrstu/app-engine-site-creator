@@ -2,14 +2,21 @@
 
 {% block content %}
 
-<h1>Sidebar definition:</h1>
+<h1>Sidebar Definition:</h1>
 {% if error_message %}
 {{ error_message }}
 {% endif %}
 <form action="{% url core.views.admin.edit_sidebar %}" method="post">
-  <textarea rows="25" cols="70" name="yaml">{{ yaml }}</textarea>
   <br>
+    <b>Sidebar Heading:</b> <input name="heading" size="50" value="{{ heading }}" type="text"><br /><br />
+  {% for page in pages %}
+      <div id="page{{ page.id }}">
+      <input name="ids" value="{{ page.id }}" type="hidden">
+      <b>Page Title:</b>  <input name="page{{ page.id }}" size="50" value="{{ page.title }}" type="text"> 
+      <a href="#" onClick="dojo.destroy('page{{ page.id }}')"> Delete</a><br />
+      </div>
+  {% endfor %}
+  <br />
   <input type="submit" value="Save">
 </form>
-
 {% endblock %}

@@ -85,8 +85,8 @@ class Sidebar(db.Model):
                         return True
 
         utility.memcache_set(key, False)
-        return False
-
+        return False               
+    
     @staticmethod
     def add_page(page):
         """Appends a page to the bottom of the sidebar.

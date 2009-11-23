@@ -719,12 +719,19 @@ def edit_sidebar(request):
     """
     sidebar = Sidebar.load()
 
-    if request.POST and 'yaml' in request.POST:
-        yaml_data = request.POST['yaml']
+    if request.POST and 'heading' in request.POST:
+        newHeading = request.POST['heading']
+        yaml_data = "heading: '%s'\n" % newHeading
+        yaml_data = yaml_data + "pages:\n"
+
+        for pageId in request.POST.getlist('ids'):
+            yaml_data = yaml_data + "- {id: %s, title:" % pageId
+            yaml_data = yaml_data + " %s }\n" % request.POST['page' + pageId]
+
         if not sidebar:
             sidebar = Sidebar(yaml=yaml_data)
         else:
-            sidebar.yaml = yaml_data
+            sidebar.yaml = yaml_data            
 
         error_message = None
         try:
@@ -742,10 +749,15 @@ def edit_sidebar(request):
         return http.HttpResponseRedirect(urlresolvers.reverse('core.views.admin.index'))
 
     else:
-        yaml_data = ''
+        heading = ''
+        page = []
+
         if sidebar:
-            yaml_data = sidebar.yaml
-        return utility.respond(request, PRE+'/edit_sidebar', {'yaml': yaml_data})
+            sections = list(yaml.load_all(sidebar.yaml))
+            heading = sections[0]['heading']
+            pages = sections[0]['pages']
+            
+        return utility.respond(request, PRE+'/edit_sidebar', {'pages': pages, 'heading': heading})
 
 
 @admin_required
