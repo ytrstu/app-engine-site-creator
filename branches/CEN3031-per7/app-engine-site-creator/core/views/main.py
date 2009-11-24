@@ -67,6 +67,9 @@ def send_page(page, request):
         item.icon = '/static/images/fileicons/%s.png' % ext
 
     pageversions = Page.all().filter('name =', page.name).filter('parent_page =', page.parent_page).order('version')
+    minversion = pageversions[0].version
+    maxversion = pageversions[len(pageversions)-1].version
+    discretevals = maxversion - minversion + 1
     
     is_editor = page.user_can_write(profile)
 
@@ -74,6 +77,7 @@ def send_page(page, request):
         template = 'themes/%s/page.html' % (configuration.SYSTEM_THEME_NAME)
 
     return utility.respond(request, template, {'page': page, 'files': files, 'version': page.version, 'pageversions': pageversions,
+                                               'maxversion': maxversion, 'minversion': minversion,  'discretevals': discretevals, 
                                                'is_editor': is_editor})
 
 

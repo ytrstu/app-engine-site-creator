@@ -79,7 +79,25 @@
     </ul>
   </div>
   {% endif %}
+  
+  
 
   
 {% endblock %}
 
+{% block versioninfo %}
+    {% if pageversions %}
+    {% for pageversion in pageversions %}
+          
+          {% if pageversion.version %}
+            {% ifequal pageversion.version version %}
+            <b> 
+            {% endifequal %}
+              <li>{{ pageversion.modified|date:"n/j/y g:i A"  }}</li>
+            {% ifequal pageversion.version version %}
+            </b> 
+            {% endifequal %}
+          {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endblock %}
