@@ -6,8 +6,18 @@
 {% if error_message %}
 {{ error_message }}
 {% endif %}
+<form action="{% url core.views.admin.add_to_sidebar 0 %}" method="post">
+    <b>Pages:</b>
+    <select name="page_id">
+  {% for page in pageOptions %}
+    <option value="{{ page.key.id }}"> {{ page.title }} </option>
+  {% endfor %}
+    </select>
+    <input type="submit" value="Add Page">
+</form>
 <form action="{% url core.views.admin.edit_sidebar %}" method="post">
   <br>
+  
     <b>Sidebar Heading:</b> <input name="heading" size="50" value="{{ heading }}" type="text"><br /><br />
   {% for page in pages %}
       <div id="page{{ page.id }}">

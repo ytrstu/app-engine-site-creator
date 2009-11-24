@@ -688,7 +688,7 @@ def export_users(_request):
 
 
 @super_user_required
-def add_to_sidebar(_request, page_id):
+def add_to_sidebar(request, page_id):
     """Adds a page to the bottom of the sidebar.
 
     Args:
@@ -699,7 +699,11 @@ def add_to_sidebar(_request, page_id):
       A Django HttpResponse object.
 
     """
-    page = Page.get_by_id(int(page_id))
+    if request.POST and 'page_id' in request.POST:
+        page = Page.get_by_id(int(request.POST['page_id']))
+    else:
+        page = Page.get_by_id(int(page_id))
+        
     Sidebar.add_page(page)
     return http.HttpResponseRedirect(
         urlresolvers.reverse('core.views.admin.edit_sidebar'))
@@ -751,13 +755,17 @@ def edit_sidebar(request):
     else:
         heading = ''
         page = []
-
+        pageOptions = []
+        
         if sidebar:
             sections = list(yaml.load_all(sidebar.yaml))
             heading = sections[0]['heading']
             pages = sections[0]['pages']
+            pageOptions = Page.all()
             
-        return utility.respond(request, PRE+'/edit_sidebar', {'pages': pages, 'heading': heading})
+        return utility.respond(request, PRE+'/edit_sidebar', {'pages': pages,
+                                                              'pageOptions': pageOptions,
+                                                              'heading': heading})
 
 
 @admin_required
