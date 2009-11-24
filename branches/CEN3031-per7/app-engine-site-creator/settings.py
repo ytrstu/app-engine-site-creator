@@ -51,7 +51,7 @@ MIDDLEWARE_CLASSES = (
     #'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.contrib.auth.middleware.AuthenticationMiddleware',        
     'core.middleware.middleware.AddUserToRequestMiddleware',
-    #'core.middleware.debug_toolbar.middleware.DebugToolbarMiddleware',
+    'core.middleware.debug_toolbar.middleware.DebugToolbarMiddleware',
     #'ragendja.auth.middleware.GoogleAuthenticationMiddleware',
 )
 ROOT_PATH = os.path.dirname(__file__)
