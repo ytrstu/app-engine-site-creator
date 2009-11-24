@@ -195,7 +195,8 @@ def get_tree_data(request):
                     'core.views.admin.delete_page', args=[page_id])}
         children = []
         for child in page.page_children:
-            if child.acl.user_can_read(request.profile) and child.name != "New Page" and child.version == 2:
+            max_version = Page.all().filter('name =', child.name).filter('parent_page =', child.parent_page).order('-version').get().version
+            if child.acl.user_can_read(request.profile) and child.name != "New Page" and child.version == max_version:
                 children.append(get_node_data(child))
         if children:
             data['children'] = children
