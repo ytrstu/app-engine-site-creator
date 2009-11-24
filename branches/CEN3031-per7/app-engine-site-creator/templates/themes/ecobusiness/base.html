@@ -43,7 +43,9 @@
 		<div id="leftcolumn">
 			{% block sidebar %}
 		        {% if sidebar %}
-		          {{ sidebar }}
+                    {% autoescape off %} 
+                        {{ sidebar }}
+                    {% endautoescape %}
 		        {% else %}
 		          &nbsp;
 		        {% endif %}
