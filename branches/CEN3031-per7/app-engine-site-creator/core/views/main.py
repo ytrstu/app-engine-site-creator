@@ -66,12 +66,14 @@ def send_page(page, request):
         ext = item.name.split('.')[-1]
         item.icon = '/static/images/fileicons/%s.png' % ext
 
+    pageversions = Page.all().filter('name =', page.name).filter('parent_page =', page.parent_page).order('version')
+    
     is_editor = page.user_can_write(profile)
 
     if configuration.SYSTEM_THEME_NAME:
         template = 'themes/%s/page.html' % (configuration.SYSTEM_THEME_NAME)
 
-    return utility.respond(request, template, {'page': page, 'files': files,
+    return utility.respond(request, template, {'page': page, 'files': files, 'version': page.version, 'pageversions': pageversions,
                                                'is_editor': is_editor})
 
 
@@ -101,7 +103,7 @@ def send_file(file_record, request):
     return response
 
 
-def get_url(request, path_str):
+def get_url(request, path_str, version_num=None):
     """Parse the URL and return the requested content to the user.
 
     Args:
@@ -119,8 +121,16 @@ def get_url(request, path_str):
         if not base:
             return None
         if not path or path == ['']:
-            utility.memcache_set('path:%s' % path_str, base)
-            logging.debug('set memcache, returning %s', base)
+            if version_num:
+                req_version_page = Page.all().filter('name =', base.name).filter('parent_page =', base.parent_page).filter('version =', int(version_num)).get()
+                if req_version_page:
+                    base.content = req_version_page.content
+                    base.version = req_version_page.version
+                    utility.memcache_set(('path:%sv:%s') % (path_str, version_num), base)
+                    logging.debug('set memcache, returning %s', base)
+            else:
+                utility.memcache_set('path:%s' % path_str, base)
+                logging.debug('set memcache, returning %s', base)
             return base
         if len(path) == 1:
             attachment = base.get_attachment(path[0])
@@ -131,7 +141,11 @@ def get_url(request, path_str):
     def follow_url_backwards(pre_path, post_path):
         """Traverse the path backwards to find a cached page or the 
            root."""
-        key = 'path:' + '/'.join(pre_path)
+        logging.debug('pre_path: %s post_path: %s', pre_path, post_path)
+        if version_num:
+            key = 'path:' + '/'.join(pre_path) + 'v:' + version_num
+        else:
+            key = 'path:' + '/'.join(pre_path)
         item = utility.memcache_get(key)
         if item:
             return follow_url_forwards(item, post_path)
@@ -140,7 +154,7 @@ def get_url(request, path_str):
         return follow_url_backwards(pre_path[:-1], [pre_path[-1]] + post_path)
 
     path = [dir_name for dir_name in path_str.split('/') if dir_name is not '']
-    logging.debug('%s',path)
+    logging.debug('path = %s version_num = %s',path,version_num)
     item = follow_url_backwards(path, [])
 
     if isinstance(item, Page):
@@ -177,7 +191,7 @@ def get_tree_data(request):
                     'core.views.admin.delete_page', args=[page_id])}
         children = []
         for child in page.page_children:
-            if child.acl.user_can_read(request.profile) and child.name != "New Page":
+            if child.acl.user_can_read(request.profile) and child.name != "New Page" and child.version == 2:
                 children.append(get_node_data(child))
         if children:
             data['children'] = children
@@ -197,13 +211,17 @@ def page_list(request):
 def get_sidebar(request):
     return utility.respond(request, 'themes/frames/sidebar')
 
-def get_root(request, to_page=None):
+def get_root(request, to_page=None,version_num=None):
     import configuration
+    logging.debug('217 version_num = %s',version_num)
     if configuration.SYSTEM_THEME_NAME == 'frames':
         if to_page:
             return utility.respond(request, 'themes/frames/base',
                     {'to_page':to_page}) 
         return utility.respond(request, 'themes/frames/base',{})
+    if version_num:
+        logging.debug('224 version_num = %s',version_num)
+        return get_url(request, "/",version_num)
     return get_url(request, "/")
 
 def frame_root(request): 

@@ -73,7 +73,9 @@ urlpatterns += defaults.patterns(
     (r'^frames/root/$', 'core.views.main.frame_root'),
     (r'^frames/root/(?P<to_page>.*)$', 'core.views.main.get_root'),
     (r'^$', 'core.views.main.get_root'),
-    (r'^(.*)$', 'core.views.main.get_url'),
+    (r'^v=(?P<version_num>.*)', 'core.views.main.get_root'),
+    (r'^(?P<path_str>.*)/v=(?P<version_num>.*)$', 'core.views.main.get_url'),
+	(r'^(.*)$', 'core.views.main.get_url'),
 
 ) + urlpatterns
 

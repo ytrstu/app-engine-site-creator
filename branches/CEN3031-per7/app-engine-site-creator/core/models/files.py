@@ -256,6 +256,7 @@ class Page(File):
 
     title = db.StringProperty()
     content = db.TextProperty()
+    version = db.IntegerProperty(default = 1)
 
     @classmethod
     def kind(cls):
@@ -271,7 +272,7 @@ class Page(File):
 
     def get_child(self, name):
         """Returns the child with the given name."""
-        return self.page_children.filter('name =', name).get()
+        return self.page_children.filter('name =', name).order('-version').get()
 
     def in_sidebar(self):
         """Determines if the page is referenced in the sidebar."""
@@ -283,7 +284,7 @@ class Page(File):
         key = 'rootpage'
         root = utility.memcache_get(key)
         if not root:
-            root = Page.all().filter('parent_page =', None).get()
+            root = Page.all().filter('parent_page =', None).order('-version').get()
             #logging.debug('Parent: %s', root)
             utility.memcache_set(key, root)
         if not root:

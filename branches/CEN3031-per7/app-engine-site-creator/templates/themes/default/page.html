@@ -59,5 +59,27 @@
     </ul>
   </div>
   {% endif %}
+  
+    {% if pageversions %}
+  <div id="attachments">
+    <h1>Page Versions:</h1>
+    <ul style="list-style-type:none">
+    {% for pageversion in pageversions %}
+      <li style="list-style-image:url({{file.icon}})">
+      {% if pageversion.version %}
+        <a href="v={{ pageversion.version }}">
+      {% else %}
+        <a href="#">
+      {% endif %}
+      {% ifequal pageversion.version version %}
+      * 
+      {% endifequal %}
+          {{ pageversion.modified|date:"F j, Y h:i A"  }}</a>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  
 {% endblock %}
 

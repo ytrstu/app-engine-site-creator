@@ -264,9 +264,29 @@ def edit_page(request, page_id=None, parent_id=None):
     page.content = request.POST['editorHtml']
     if parent_id and not page.parent_page:
         page.parent_page = Page.get_by_id(int(parent_id))
-    page.put()
+    
+    new_page = Page(name=page.name,
+                    created=page.created,
+                    modified=page.modified,
+                    parent_page=page.parent_page,
+                    acl_ref=page.acl_ref,
+                    title=page.title,
+                    content=page.content,
+                    version=page.version)
+    
+    new_page.version = new_page.version + 1
+    new_page.put()
+    
+    children = page.page_children
+    for child in children:
+        child.parent_page = new_page
+        child.put()
+    attachments = page.attached_files()
+    for attachment in attachments:
+        attachment.parent_page = new_page
+        attachment.put()
 
-    return utility.edit_updated_page(page.key().id(),
+    return utility.edit_updated_page(new_page.key().id(),
                                      message_id='msgChangesSaved')
 
 
