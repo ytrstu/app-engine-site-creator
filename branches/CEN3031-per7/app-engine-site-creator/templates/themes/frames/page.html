@@ -124,6 +124,42 @@
 		</ul>
 	  </div>
   {% endif %}
+  
+          <div id="attachments">
+        <h1>Page Versions:</h1>
+        <div style="margin-left:50px;">
+        <div id="slider">
+        
+        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration"
+        count={{ discretevals }} style="height:5px;">
+        </div>
+        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration"
+        style="height:1em;font-size:75%;color:black;">
+                    {% if pageversions %}
+                    {% for pageversion in pageversions %}
+                          
+                          {% if pageversion.version %}
+                            {% ifequal pageversion.version version %}
+                            <b> 
+                            {% endifequal %}
+                              <li>{{ pageversion.modified|date:"n/j/y"  }}<br>{{ pageversion.modified|date:"g:i A"  }}</li>
+                            {% ifequal pageversion.version version %}
+                            </b> 
+                            {% endifequal %}
+                          {% endif %}
+                    {% endfor %}
+                    {% endif %}
+
+        </ol>
+        
+        </div>
+        </div>
+        <p>
+            <input type="hidden" id="sliderValue" dojoType="dijit.form.TextBox" />
+        </p>
+        <br>
+        </div>
+  
 {% endblock %}
 
 {% block children %}
@@ -140,41 +176,6 @@
     {% endif %}
 {% endblock %}
 
-        <div id="attachments">
-        <h1>Page Versions:</h1>
-        <div style="margin-left:50px;">
-        <div id="slider">
-        
-        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration"
-        count={{ discretevals }} style="height:5px;">
-        </div>
-        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration"
-        style="height:1em;font-size:75%;color:black;">
-            {% block versioninfo %}
-                    {% if pageversions %}
-                    {% for pageversion in pageversions %}
-                          
-                          {% if pageversion.version %}
-                            {% ifequal pageversion.version version %}
-                            <b> 
-                            {% endifequal %}
-                              <li>{{ pageversion.modified|date:"n/j/y"  }}<br>{{ pageversion.modified|date:"g:i A"  }}</li>
-                            {% ifequal pageversion.version version %}
-                            </b> 
-                            {% endifequal %}
-                          {% endif %}
-                    {% endfor %}
-                    {% endif %}
-            {% endblock %}
 
-        </ol>
-        
-        </div>
-        </div>
-        <p>
-            <input type="hidden" id="sliderValue" dojoType="dijit.form.TextBox" />
-        </p>
-        <br>
-        </div>
         
 </body></html>
