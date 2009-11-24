@@ -14,6 +14,32 @@
   {% endif %}
 {% endblock %}
 
+{% block includes %}
+    <script type="text/javascript">
+        dojo.require("dijit.form.Slider");
+        dojo.require("dijit.form.TextBox"); // this we only include to make the textinput look prettier
+        dojo.addOnLoad(function() {
+
+            var slider = new dijit.form.HorizontalSlider({
+                name: "slider",
+                value: {{ version }},
+                minimum: {{ minversion }},
+                maximum: {{ maxversion }},
+                intermediateChanges: true,
+                discreteValues: {{ discretevals }},
+                style: "width:500px;",
+                onChange: function(value) {
+                    dojo.byId("sliderValue").value = value;
+                },
+                onMouseUp: function(value) {
+                    window.location = "v=" + dojo.byId("sliderValue").value;
+                }
+            },
+            "slider");
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
   {% if page.breadcrumbs %}
     <div class="breadcrumbs">
@@ -60,44 +86,42 @@
   </div>
   {% endif %}
   
-    {% if pageversions %}
-  <div id="attachments">
-    <h1>Page Versions:</h1>
-    <ul style="list-style-type:none">
-    {% for pageversion in pageversions %}
-      <li style="list-style-image:url({{file.icon}})">
-      {% if pageversion.version %}
-        <a href="v={{ pageversion.version }}">
-      {% else %}
-        <a href="#">
-      {% endif %}
-      {% ifequal pageversion.version version %}
-      * 
-      {% endifequal %}
-          {{ pageversion.modified|date:"F j, Y h:i A"  }}</a>
-    {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-  
-  
 
-  
-{% endblock %}
 
-{% block versioninfo %}
-    {% if pageversions %}
-    {% for pageversion in pageversions %}
-          
-          {% if pageversion.version %}
-            {% ifequal pageversion.version version %}
-            <b> 
-            {% endifequal %}
-              <li>{{ pageversion.modified|date:"n/j/y g:i A"  }}</li>
-            {% ifequal pageversion.version version %}
-            </b> 
-            {% endifequal %}
-          {% endif %}
-    {% endfor %}
-    {% endif %}
+
+        <div id="attachments">
+        <h1>Page Versions:</h1>
+        <div style="margin-left:50px;">
+        <div id="slider">
+        
+        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration"
+        count={{ discretevals }} style="height:5px;">
+        </div>
+        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration"
+        style="height:1em;font-size:75%;color:black;">
+            {% if pageversions %}
+            {% for pageversion in pageversions %}
+                  
+                  {% if pageversion.version %}
+                    {% ifequal pageversion.version version %}
+                    <b> 
+                    {% endifequal %}
+                      <li>{{ pageversion.modified|date:"n/j/y"  }}<br>{{ pageversion.modified|date:"g:i A"  }}</li>
+                    {% ifequal pageversion.version version %}
+                    </b> 
+                    {% endifequal %}
+                  {% endif %}
+            {% endfor %}
+            {% endif %}
+
+        </ol>
+        
+        </div>
+        </div>
+        <p>
+            <input type="hidden" id="sliderValue" dojoType="dijit.form.TextBox" />
+        </p>
+        <br>
+        </div>
+        
 {% endblock %}
