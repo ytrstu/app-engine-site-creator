@@ -37,7 +37,7 @@ from core.models.users import UserGroup, UserProfile
 
 import yaml
 
-PRE='themes/frames/admin'
+PRE='admin'
 
 def admin_required(func):
     """Ensure that the logged in user is an administrator."""

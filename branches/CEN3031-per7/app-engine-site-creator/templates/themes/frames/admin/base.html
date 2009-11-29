@@ -1,8 +1,7 @@
-{% extends "themes/frames/page.html" %}
+{% extends "admin/base.html" %}
     {% block footer %}
     {{ configuration.FOOTER_HTML|safe }}
     {% endblock %}
-
     {% block tracking %}
     {% if configuration.ANALYTICS_ID %}
       <script type="text/javascript">

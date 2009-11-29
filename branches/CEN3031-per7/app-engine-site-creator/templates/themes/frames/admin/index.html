@@ -1,121 +1,16 @@
-{% extends "themes/frames/admin/base.html" %}
+{% extends "admin/index.html" %}
+    {% block style %}
+    <style type="text/css">
+      @import "http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojo/resources/dojo.css";
+      @import "http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dijit/themes/tundra/tundra.css";
+      @import "/static/css/frames.css";
+    </style>
+    <script type="text/javascript"
+          src="http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojo/dojo.xd.js"
+          djConfig="parseOnLoad:true,isDebug:false"></script>
+    
 
-
-{% block jscript %}
-    dojo.require('dijit.Tree');
-    dojo.require('dijit.Menu');
-    dojo.require("dijit._tree.dndSource");
-    dojo.require('dojo.data.ItemFileWriteStore');
-    dojo.require("dijit.Dialog");
-    dojo.require("dijit.form.Button");
-    dojo.require('dojo.parser');
-
-
-    // Stores the TreeNode that has last been clicked on
-    var selected_node = null;
-
-
-	//on item tree , we only want to drop on containers, or the root node itself, not on items in the containers
-    function itemTreeCheckItemAcceptance(node,source) 
-    {
-        return true;
-    }
-
-    function dndAccept(source,nodes)
-    {
-        return true;
-    }
-
-    function treeSave(saveCompleteCallback, saveFailedCallback){
-        //  xhrPost/xhrPut your data back to your server (convert it to the server format first if need be)
-        // 'this' keyword refers to the ItemFileWriteStore instance being extended
-        alert('hey');
-        saveCompleteCallback();
-    }
-{% endblock %}
-
-{% block onload %}
-    dojo.parser.parse();
-    dojo.data.ItemFileWriteStore._saveCustom = treeSave;
-{% endblock %}
-
-{% block content %}
-<div dojoType="dojo.data.ItemFileWriteStore"
-    jsId="dataStore"
-    id="dataStore"
-     url="/_treedata/"
-     >
-<script type="dojo/method" event="_saveCustom" args="saveCompleteCallback, saveFailedCallback">
-                //  xhrPost/xhrPut your data back to your server (convert it to the server format first if need be)
-                // 'this' keyword refers to the ItemFileWriteStore instance being enhanced
-                // dojo/method replaces the _saveCustom method of the ItemFileWriteStore (currently undefined)
-                alert('hey2');
-                saveCompleteCallback();
-        </script>
- </div>
-
-
- <div 
-     dojoType="dijit.tree.TreeStoreModel"
-     jsId="model"
-     store="dataStore"
-     query="{title:'*'}"></div>
-
-<ul dojoType="dijit.Menu" id="tree_menu" style="display: none;">
-  <li dojoType="dijit.MenuItem"
-      onClick="window.location.href = '/' + selected_node.item.path;">
-    View
-  </li>
-  <li dojoType="dijit.MenuItem"
-      onClick="window.location.href = selected_node.item.edit_url;">
-    Edit
-  </li>
-  <li dojoType="dijit.MenuItem"
-      onClick="window.location.href = selected_node.item.child_url;">
-      Add child
-  </li>
-  <li dojoType="dijit.MenuItem"
-      onClick="dijit.byId('delete_dialog').show()">
-    Delete
-  </li>
-</ul>
-
-<div dojoType="dijit.Dialog" id="delete_dialog" title="Delete Page"
-     execute="window.location.href = selected_node.item.delete_url;"
-     style="display: none;">
-  <div>
-    Are you sure you want to delete
-    &quot;<span id="delete_dialog_page_name"></span>&quot;
-    and all its children?
-  </div>
-  <div style="text-align: center; margin-top: 10px">
-    <button dojoType="dijit.form.Button" type="submit">Delete</button>
-    <button dojoType="dijit.form.Button"
-            onClick="dijit.byId('delete_dialog').hide()">
-      Cancel
-    </button>
-  </div>
-</div>
-
-<div dojoType="dijit.Tree" model="model" menu="tree_menu" id="tree" 
-     dndController="dijit._tree.dndSource" checkAcceptance="dndAccept" 
-	checkItemAcceptance="itemTreeCheckItemAcceptance"
-	style="float: left; width:100%">
-  <script type="dojo/connect">
-    var menu = dijit.byId("tree_menu");
-    menu.bindDomNode(this.domNode);
-
-    // Record some TreeNode-specific settings every time the menu is opened
-    dojo.connect(menu, "_openMyself", this, function(e){
-      selected_node = dijit.getEnclosingWidget(e.target);
-      dojo.byId('delete_dialog_page_name').innerHTML = selected_node.item.title;
-    });
-  </script>
-</div>
-<button dojoType="dijit.form.Button" onclick="dijit.byId('tree').model.store.save();">Save</button>
-
-<div style="font-size:small; margin-top:40px; float:left;">
-  <i>Right click on a page for options.</i>
-</div>
-
+    
+    {% endblock %}
+{% block sidebar %}
 {% endblock %}
