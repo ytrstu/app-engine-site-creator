@@ -76,7 +76,8 @@ def send_page(page, request):
 
     if Theme.get_theme():
         template = 'themes/%s/page.html' % (Theme.get_theme().name)
-        logging.debug(template)
+        if Theme.get_theme().name == 'frames' and (page.path == "" or page.path == "/"):
+            return utility.respond(request,'themes/frames/base')
     elif configuration.SYSTEM_THEME_NAME:
         template = 'themes/%s/page.html' % (configuration.SYSTEM_THEME_NAME)
 
