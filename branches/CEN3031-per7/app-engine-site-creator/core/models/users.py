@@ -163,3 +163,13 @@ class UserGroup(db.Model):
             utility.memcache_set(key, groups)
         return groups
 
+class Theme(db.Model):
+    name = db.StringProperty(required=True)
+
+    @staticmethod
+    def get_theme():
+        if len(Theme.all()) > 0:
+            return Theme.all()[0]
+        else:
+            return None
+

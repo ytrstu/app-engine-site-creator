@@ -10,6 +10,10 @@
                     for( i = 0; i < links.length; i++)
                     {
                         links[i].target = "showframe";
+                        if(link.pathname == "/" || link.pathname == "")
+                        {
+                            link.href = link.href.replace(/\/$/,"/frames/root/");
+                        }
                     }
 
                 

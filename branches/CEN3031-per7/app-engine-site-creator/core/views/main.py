@@ -32,6 +32,7 @@ from django.utils import simplejson
 from django.http import Http404
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore
+from core.models.users import Theme
 from core import utility
 
 
@@ -73,7 +74,10 @@ def send_page(page, request):
     
     is_editor = page.user_can_write(profile)
 
-    if configuration.SYSTEM_THEME_NAME:
+    if Theme.get_theme():
+        template = 'themes/%s/page.html' % (Theme.get_theme().name)
+        logging.debug(template)
+    elif configuration.SYSTEM_THEME_NAME:
         template = 'themes/%s/page.html' % (configuration.SYSTEM_THEME_NAME)
 
     return utility.respond(request, template, {'page': page, 'files': files, 'version': page.version, 'pageversions': pageversions,

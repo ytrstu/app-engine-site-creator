@@ -32,7 +32,7 @@
   <!-- #header: holds the logo and top links -->
   <div id="header" class="width">
 
-    <img src="images/logo.gif" alt=""/>
+    <img src="static/images/logo.png" alt=""/>
 
     <ul>
       {% block user_header %}
@@ -127,7 +127,7 @@
       <div id="sidebar">
      	{% block sidebar %}
 	        {% if sidebar %}
-	          {{ sidebar }}
+	          {{ sidebar|safe }}
 	        {% else %}
 	          &nbsp;
 	        {% endif %}

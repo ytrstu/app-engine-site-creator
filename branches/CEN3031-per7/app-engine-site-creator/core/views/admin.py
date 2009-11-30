@@ -32,7 +32,7 @@ from core import forms, utility
 from core.views.main import get_root
 from core.models.sidebar import Sidebar
 from core.models.files import Page, File, FileStore, AccessControlList
-from core.models.users import UserGroup, UserProfile
+from core.models.users import UserGroup, UserProfile, Theme
 
 
 import yaml
@@ -164,11 +164,19 @@ def choose_theme(request):
     for file in os.listdir(tdir):
         if os.path.isdir(tdir+file) and not file.startswith("."):
             themes.append(file)
-    sel = configuration.SYSTEM_THEME_NAME
+    if Theme.get_theme():
+        sel = Theme.get_theme().name
+    else:
+        sel = configuration.SYSTEM_THEME_NAME
 
     if request.method == 'POST':
         sel = request.POST['menu']
-        configuration.SYSTEM_THEME_NAME=sel
+        if Theme.get_theme():
+            theme = Theme.get_theme()
+            theme.name = sel
+        else:
+            theme = Theme(name=sel)
+        theme.put()
         if sel == 'frames':
             PRE='themes/frames/admin'
             to_page='/admin/edit/choosetheme'
