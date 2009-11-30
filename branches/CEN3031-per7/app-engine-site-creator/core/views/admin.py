@@ -69,6 +69,10 @@ def super_user_required(func):
 
 @super_user_required
 def index(request):
+    global PRE
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/index')
     """Show the root administrative page."""
 
@@ -76,18 +80,27 @@ def index(request):
 @super_user_required
 def recently_modified(request):
     """Show the 10 most recently modified pages."""
+    global PRE
     pages = Page.all().order('modified').fetch(10)
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/recently_modified', {'pages': pages})
 
 
 @super_user_required
 def get_help(request):
     """Return a help page for the site maintainer."""
+    global PRE
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/help')
 
 
 def edit_acl(request):
     """Edits the contents of an ACL."""
+    global PRE
 
     def grant_access(acl, list_to_edit):
         """Grants access to a page based on data in the POST.
@@ -208,6 +221,10 @@ def edit_page(request, page_id=None, parent_id=None):
     page = None
     files = None
 
+    global PRE
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     if page_id:
         page = Page.get_by_id(int(page_id))
         logging.debug('%s', page)
@@ -343,8 +360,12 @@ def upload_file(request):
       A http redirect to the edit form for the parent page
 
     """
+    global PRE
     if not request.POST or not 'page_id' in request.POST:
         raise Http404
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
 
     page_id = request.POST['page_id']
     page = Page.get_by_id(int(page_id))
@@ -477,7 +498,11 @@ def filter_users(request):
       A Django HttpResponse object.
 
     """
+    global PRE
     groups = UserGroup.all().order('name')
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/filter_users', {'groups': groups})
 
 
@@ -492,7 +517,11 @@ def list_groups(request):
       A Django HttpResponse object.
 
     """
+    global PRE
     groups = UserGroup.all().order('name')
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/list_groups', {'groups': groups})
 
 
@@ -508,6 +537,7 @@ def view_group(request, group_id):
       A Django HttpResponse object.
 
     """
+    global PRE
     users = UserProfile.all().order('email')
     if group_id:
         group = UserGroup.get_by_id(int(group_id))
@@ -515,6 +545,9 @@ def view_group(request, group_id):
             users = UserProfile.get(group.users)
         else:
             users = []
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     return utility.respond(request, PRE+'/view_group', {'users': users})
 
 
@@ -597,7 +630,11 @@ def edit_group(request, group_id):
       A Django HttpResponse object.
 
     """
+    global PRE
     group = None
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     if group_id:
         group = UserGroup.get_by_id(int(group_id))
     return utility.edit_instance(request, UserGroup, forms.GroupEditForm,
@@ -637,18 +674,25 @@ def edit_user(request, email):
       A Django HttpResponse object.
 
     """
+    global PRE
     if not email:
         if request.POST and request.POST['email']:
             url = urlresolvers.reverse('core.views.admin.edit_user',
                                        args=[request.POST['email']])
             return http.HttpResponseRedirect(url)
         else:
+            if Theme.get_theme():
+                if Theme.get_theme().name == 'frames':
+                    PRE='themes/frames/admin'
             return utility.respond(request, PRE+'/edit_user', {'title': 'Edit user'})
 
     profile = UserProfile.load(email)
     if not profile:
         raise Http404
     title = 'Edit user: ' + email
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
 
     return utility.edit_instance(request, UserProfile, forms.UserEditForm,
                                  PRE+'/edit_user',
@@ -667,6 +711,10 @@ def bulk_edit_users(request):
       A Django HttpResponse object.
 
     """
+    global PRE
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     if not request.POST:
         return utility.respond(request, PRE+'/bulk_edit_users',
                                {'title': 'Bulk user upload form'})
@@ -749,6 +797,7 @@ def edit_sidebar(request):
       A Django HttpResponse object.
 
     """
+    global PRE
     sidebar = Sidebar.load()
 
     if request.POST and 'heading' in request.POST:
@@ -774,6 +823,9 @@ def edit_sidebar(request):
             error_message = 'Invalid YAML, missing key %s' % error
 
         if error_message:
+            if Theme.get_theme():
+                if Theme.get_theme().name == 'frames':
+                    PRE='themes/frames/admin'
             return utility.respond(request, PRE+'/edit_sidebar',
                                    {'yaml': yaml_data,
                                     'error_message': error_message})
@@ -790,6 +842,9 @@ def edit_sidebar(request):
             heading = sections[0]['heading']
             pages = sections[0]['pages']
             pageOptions = Page.all()
+        if Theme.get_theme():
+            if Theme.get_theme().name == 'frames':
+                PRE='themes/frames/admin'
             
         return utility.respond(request, PRE+'/edit_sidebar', {'pages': pages,
                                                               'pageOptions': pageOptions,
@@ -823,6 +878,10 @@ def display_memcache_info(request):
       A Django HttpResponse object.
 
     """
+    global PRE
+    if Theme.get_theme():
+        if Theme.get_theme().name == 'frames':
+            PRE='themes/frames/admin'
     # pylint: disable-msg=E1101
     return utility.respond(request, PRE+'/memcache_info',
                            {'memcache_info': memcache.get_stats()})

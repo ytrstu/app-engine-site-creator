@@ -10,6 +10,29 @@
           djConfig="parseOnLoad:true,isDebug:false"></script>
     
 
+    <script type="text/javascript">
+        {% block jscript %}{% endblock %}
+            dojo.addOnLoad( function() {
+                var links = dojo.query("a");
+                var i;
+                for(i = 0; i < links.length; i++)
+                {
+                    var link = links[i];
+                    if(link.pathname == "/" || link.pathname == "")
+                    {
+                        link.href = link.href.replace(/\/$/,"/frames/root/");
+                    }
+                    if(link.href.match("_ah/login") || link.href.match("_ah/logout"))
+                    {
+                        link.target="_top";
+                        //link.search="?continue=/&to_page="+link.baseURI;
+                        //link.href = link.href.replace(link.baseURI,"/");
+                    }
+                }
+                {% block onload %}
+                {% endblock %}
+            });
+        </script>
     
     {% endblock %}
 {% block sidebar %}

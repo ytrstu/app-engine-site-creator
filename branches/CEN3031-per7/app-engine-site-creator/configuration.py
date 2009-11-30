@@ -34,10 +34,10 @@ FILE_CACHE_TIME = datetime.timedelta(days=1)
 
 
 # Title for the website
-SYSTEM_TITLE = 'App Engine Site Creator'
+SYSTEM_TITLE = 'CEN3031'
 
 # Description for the website
-SYSTEM_DESCRIPTION = 'This site was built using App Engine Site Creator'
+SYSTEM_DESCRIPTION = 'CEN3031 website by team fox'
 
 # Unique identifier from Google Analytics (ie. UA-xxxxxxx-x)
 ANALYTICS_ID = ''
