@@ -836,11 +836,15 @@ def edit_sidebar(request):
         heading = ''
         page = []
         pageOptions = []
+        pages = []
         
         if sidebar:
             sections = list(yaml.load_all(sidebar.yaml))
             heading = sections[0]['heading']
             pages = sections[0]['pages']
+            for pg in pages:
+                pg['path'] = Page.get_by_id(int(pg['id'])).path
+                
             pageOptions = Page.all()
         if Theme.get_theme():
             if Theme.get_theme().name == 'frames':

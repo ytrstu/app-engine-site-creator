@@ -23,6 +23,7 @@
       <div id="page{{ page.id }}">
       <input name="ids" value="{{ page.id }}" type="hidden">
       <b>Page Title:</b>  <input name="page{{ page.id }}" size="50" value="{{ page.title }}" type="text"> 
+      <a href="../../../{{ page.path }}">View</a>
       <a href="#" onClick="dojo.destroy('page{{ page.id }}')"> Delete</a><br />
       </div>
   {% endfor %}

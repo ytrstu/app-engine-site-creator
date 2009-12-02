@@ -18,12 +18,25 @@ indexes:
 
 - kind: Page
   properties:
+  - name: name
   - name: parent_page
-  - name: version
-    direction: desc
+  - name: created
 
 - kind: Page
   properties:
   - name: name
   - name: parent_page
   - name: version
+
+- kind: Page
+  properties:
+  - name: name
+  - name: parent_page
+  - name: version
+    direction: desc
+
+- kind: Page
+  properties:
+  - name: parent_page
+  - name: version
+    direction: desc
