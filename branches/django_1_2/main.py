@@ -23,22 +23,32 @@ directly -- everything else is controlled from there.
 
 """
 
+# Standard Python imports.
 import os
 import sys
 import logging
 
-from google.appengine.dist import use_library
-use_library('django', '1.2')
+# Log a message each time this module get loaded.
+logging.info('Loading %s, app version = %s',
+             __name__, os.getenv('CURRENT_VERSION_ID'))
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-from django.conf import settings
-settings._target = None
+import appengine_config  # pylint: disable-msg=W0611
 
-from django.core.handlers import wsgi
+# AppEngine imports.
 from google.appengine.ext.webapp import util
 
+# Import webapp.template.  This makes most Django setup issues go away.
+from google.appengine.ext.webapp import template  # pylint: disable-msg=W0611
+
+# Import various parts of Django.
+import django.core.handlers.wsgi
 import django.core.signals
 import django.db
+import django.forms
+
+# Work-around to avoid warning about django.newforms in djangoforms.
+django.newforms = django.forms
+
 
 def log_exception(*args, **kwds):
   # pylint: disable-msg=W0613
@@ -56,7 +66,7 @@ django.core.signals.got_request_exception.disconnect(
 
 def main():
   """Loads the django application."""
-  application = wsgi.WSGIHandler()
+  application = django.core.handlers.wsgi.WSGIHandler()
   util.run_wsgi_app(application)
 
 if __name__ == '__main__':
